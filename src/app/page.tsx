@@ -1,6 +1,5 @@
 'use client'
-import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { app } from './utils/langchain';
 import { CHAIN_NAMESPACES, IAdapter, IProvider, WEB3AUTH_NETWORK } from "@web3auth/base";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
@@ -9,6 +8,7 @@ import { Web3Auth, Web3AuthOptions } from "@web3auth/modal";
 import RPC from './utils/ethersRPC';
 import { getSystemMessages } from "./utils/prompt";
 import JSXStringRenderer from "./components/JSXString";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
 
@@ -42,7 +42,7 @@ export default function Home() {
   const [inputMessage, setInputMessage] = React.useState('');
   const [provider, setProvider] = useState<IProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
-
+  const [threadId, setThreadId] = useState(uuidv4());
   const init = async () => {
     try {
       const adapters = await getDefaultExternalAdapters({ options: web3AuthOptions });
@@ -140,10 +140,13 @@ export default function Home() {
 
     try {
       const address = await RPC.getAccounts(provider);
-      const systemMessages = getSystemMessages(address, messages);
+      const systemMessages = getSystemMessages(address);
       const stream = await app.stream(
         { messages: [...systemMessages, { role: "user", content: message }] },
-        { streamMode: "values" }
+        {
+          streamMode: "values",
+          configurable: { thread_id: threadId }
+        }
       );
 
       for await (const chunk of stream) {
@@ -152,6 +155,8 @@ export default function Home() {
         const content = lastMessage.content;
         const toolCalls = lastMessage.tool_calls;
         console.log("content", type);
+        console.log("content", content);
+        console.log("content", toolCalls);
         // const data = JSON.stringify({
         //     type,
         //     content,

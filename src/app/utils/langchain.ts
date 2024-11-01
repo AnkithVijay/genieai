@@ -1,10 +1,17 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { MessagesAnnotation, StateGraph, START, END } from "@langchain/langgraph/web";
+import { MessagesAnnotation, StateGraph, START, END, MemorySaver } from "@langchain/langgraph/web";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tools/zapper";
 import { searchTool } from "../agent/tools/search";
+import { getCrossChainQuoteTool, placeCrossChainOrderTool } from "../agent/tools/oneinch";
 
-const tools = [getTokenDataTool, getDefiDataTool, getNftDataTool, searchTool];
+const zapperTools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
+const oneInchTools = [getCrossChainQuoteTool, placeCrossChainOrderTool];
+const searchTools = [searchTool];
+
+
+const tools = [...zapperTools, ...oneInchTools, ...searchTools];
+
 const toolNode = new ToolNode(tools);
 
 const model = new ChatOpenAI({
@@ -22,10 +29,9 @@ function shouldContinue(state: typeof MessagesAnnotation.State) {
     return END;
 }
 
-async function callModel(state: typeof MessagesAnnotation.State) {
+async function callModel(state: typeof MessagesAnnotation.State, config: any) {
     const { messages } = state;
-    console.log(messages);
-    const response = await model.invoke(messages);
+    const response = await model.invoke(messages, config);
     return { messages: response };
 }
 
@@ -36,4 +42,6 @@ const workflow = new StateGraph(MessagesAnnotation)
     .addConditionalEdges("agent", shouldContinue, ["tools", END])
     .addEdge("tools", "agent");
 
-export const app = workflow.compile();
+const memory = new MemorySaver();
+
+export const app = workflow.compile({ checkpointer: memory });

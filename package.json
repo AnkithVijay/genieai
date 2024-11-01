@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@1inch/cross-chain-sdk": "^0.1.8",
     "@langchain/anthropic": "^0.3.7",
     "@langchain/community": "^0.3.11",
     "@langchain/core": "^0.3.16",
@@ -23,6 +24,7 @@
     "pino-pretty": "^11.3.0",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "uuid": "^11.0.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
