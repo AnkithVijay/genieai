@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     NEXT_PIVATE_ZAPPER_API_KEY: process.env.NEXT_PIVATE_ZAPPER_API_KEY,
     INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+    SEARPA_API_KEY: process.env.SEARPA_API_KEY
   },
 };
 

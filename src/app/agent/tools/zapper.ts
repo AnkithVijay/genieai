@@ -1,6 +1,6 @@
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
-import { fetchDefiData, fetchNFTData, fetchTokenData } from "../utils/zapper";
+import { fetchDefiData, fetchNFTData, fetchTokenData } from "../../utils/zapper";
 
 export const getTokenDataTool = tool(
     async ({ address }) => {

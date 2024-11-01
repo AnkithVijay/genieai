@@ -1,9 +1,10 @@
 import { ChatOpenAI } from "@langchain/openai";
 import { MessagesAnnotation, StateGraph, START, END } from "@langchain/langgraph/web";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
-import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tools";
+import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tools/zapper";
+import { searchTool } from "../agent/tools/search";
 
-const tools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
+const tools = [getTokenDataTool, getDefiDataTool, getNftDataTool, searchTool];
 const toolNode = new ToolNode(tools);
 
 const model = new ChatOpenAI({
