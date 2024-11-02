@@ -2,7 +2,7 @@ import { GET_NFT_DATA } from "@/app/utils/urls";
 import { NextRequest } from "next/server";
 
 const Auth = `Basic ${Buffer.from(
-  `${process.env.NEXT_PIVATE_ZAPPER_API_KEY}:`,
+  `${process.env.ZAPPER_API_KEY}:`,
   "binary"
 ).toString("base64")}`;
 
