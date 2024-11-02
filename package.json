@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@1inch/cross-chain-sdk": "^0.1.8",
+    "@1inch/fusion-sdk": "^2.1.5",
     "@langchain/anthropic": "^0.3.7",
     "@langchain/community": "^0.3.11",
     "@langchain/core": "^0.3.16",

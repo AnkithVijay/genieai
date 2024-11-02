@@ -3,10 +3,10 @@ import { MessagesAnnotation, StateGraph, START, END, MemorySaver } from "@langch
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tools/zapper";
 import { searchTool } from "../agent/tools/search";
-import { getCrossChainQuoteTool, placeCrossChainOrderTool } from "../agent/tools/oneinch";
+import { getCrossChainQuoteTool, getCrossChainSupportedTokensTool, getSameChainQuoteTool, getSupportedTokensByChainIdTool, getTokenByNameOrSymbolTool, placeCrossChainOrderTool } from "../agent/tools/oneinch";
 
 const zapperTools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
-const oneInchTools = [getCrossChainQuoteTool, placeCrossChainOrderTool];
+const oneInchTools = [getCrossChainQuoteTool, placeCrossChainOrderTool, getSameChainQuoteTool, getTokenByNameOrSymbolTool, getCrossChainSupportedTokensTool];
 const searchTools = [searchTool];
 
 
