@@ -69,6 +69,7 @@ export const getSystemMessages = (address: string) => [
 
             Rules:
             - Always give responses in the format above.
+            - Always use the address of the user when making calls to external APIs.
 
             Follow this format strictly for responses, and focus solely on providing specific recommendations. Avoid generic advice and maintain a user-friendly interface for better readability in a React component.
         `

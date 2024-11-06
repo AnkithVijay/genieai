@@ -13,7 +13,7 @@ export const getCrossChainQuoteTool = tool(
                 dstChainId,
                 srcTokenAddress,
                 dstTokenAddress,
-                amount: ethers.parseUnits(amount, srcTokenDecimals).toString()
+                amount: ethers.utils.parseUnits(amount, srcTokenDecimals).toString()
             };
             const quote = await getCrossChainQuote(params, dstTokenDecimals);
             return quote;
@@ -112,8 +112,8 @@ export const getSameChainQuoteTool = tool(
     async ({ params, chainId, fromTokenDecimals, toTokenDecimals }) => {
         console.log("ammmount", params.amount);
         console.log("fromTokenDecimals", fromTokenDecimals);
-        console.log("formatted amount", ethers.parseUnits(params.amount, fromTokenDecimals).toString());
-        params.amount = ethers.parseUnits(params.amount, fromTokenDecimals).toString();
+        console.log("formatted amount", ethers.utils.parseUnits(params.amount, fromTokenDecimals).toString());
+        params.amount = ethers.utils.parseUnits(params.amount, fromTokenDecimals).toString();
         const quote = await getSameChainQuote(params as FusionQuoteParams, params.amount, chainId, toTokenDecimals);
         console.log("quote", quote);
         return quote;
@@ -136,7 +136,7 @@ export const getSameChainQuoteTool = tool(
 
 export const getAmountInDecimalsTool = tool(
     async ({ amount, decimals }) => {
-        return ethers.parseUnits(amount, decimals).toString();
+        return ethers.utils.parseUnits(amount, decimals).toString();
     },
     {
         name: "get_amount_in_decimals",

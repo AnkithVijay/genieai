@@ -1,16 +1,10 @@
 import { HashLock, OrderParams, Quote, QuoteParams, SDK } from "@1inch/cross-chain-sdk";
-import { ethers, randomBytes, solidityPackedKeccak256 } from "ethers";
+import { ethers, utils } from "ethers";
 
 import { FusionSDK, NetworkEnum, QuoteParams as FusionQuoteParams } from "@1inch/fusion-sdk";
 
 let sdk: SDK | null = null;
 let fusionxSdk: FusionSDK | null = null;
-
-
-
-
-
-
 
 export const getOneInch = () => {
     if (!sdk) {
@@ -23,6 +17,7 @@ export const getOneInch = () => {
 }
 
 export const getFusionxSdk = (network: number) => {
+    console.log("apiKey", process.env.ONEINCH_API_KEY);
     fusionxSdk = new FusionSDK({
         url: "https://api.1inch.dev/fusion",
         authKey: process.env.ONEINCH_API_KEY || "",
@@ -41,34 +36,34 @@ export const placeOrder = async (params: {
     enableEstimate: boolean,
     walletAddress: string
 }) => {
-    const sdk = getOneInch();
-    const quote = await sdk.getQuote(params);
-    const secretsCount = quote.getPreset().secretsCount;
+    // const sdk = getOneInch();
+    // const quote = await sdk.getQuote(params);
+    // const secretsCount = quote.getPreset().secretsCount;
 
-    const secrets = Array.from({ length: secretsCount }).map(() => getRandomBytes32());
-    const secretHashes = secrets.map((x) => HashLock.hashSecret(x));
-    const hashLock =
-        secretsCount === 1
-            ? HashLock.forSingleFill(secrets[0])
-            : HashLock.forMultipleFills(
-                secretHashes.map((secretHash, i) =>
-                    solidityPackedKeccak256(["uint64", "bytes32"], [i, secretHash.toString()])
-                ) as (string & {
-                    _tag: "MerkleLeaf";
-                })[]
-            );
+    // const secrets = Array.from({ length: secretsCount }).map(() => getRandomBytes32());
+    // const secretHashes = secrets.map((x) => HashLock.hashSecret(x));
+    // const hashLock =
+    //     secretsCount === 1
+    //         ? HashLock.forSingleFill(secrets[0])
+    //         : HashLock.forMultipleFills(
+    //             secretHashes.map((secretHash, i) =>
+    //                 utils.solidityPackedKeccak256(["uint64", "bytes32"], [i, secretHash.toString()])
+    //             ) as (string & {
+    //                 _tag: "MerkleLeaf";
+    //             })[]
+    //         );
 
-    const response = await sdk
-        .placeOrder(quote, {
-            walletAddress: params.walletAddress,
-            hashLock,
-            secretHashes
-        });
-    return response;
+    // const response = await sdk
+    //     .placeOrder(quote, {
+    //         walletAddress: params.walletAddress,
+    //         hashLock,
+    //         secretHashes
+    //     });
+    // return response;
 }
 
 function getRandomBytes32(): any {
-    return randomBytes(32);
+    return utils.randomBytes(32);
 }
 
 
@@ -76,7 +71,7 @@ function getRandomBytes32(): any {
 export const getCrossChainQuote = async (params: QuoteParams, destinationTokenDecimals: number) => {
     const sdk = getOneInch();
     const response = await sdk.getQuote(params);
-    return ethers.parseUnits(response.dstTokenAmount.toString(), destinationTokenDecimals);
+    return utils.parseUnits(response.dstTokenAmount.toString(), destinationTokenDecimals);
 }
 
 export const getSameChainQuote = async (params: FusionQuoteParams, amount: string, chainId: number, toTokenDecimals: number) => {
@@ -86,7 +81,7 @@ export const getSameChainQuote = async (params: FusionQuoteParams, amount: strin
         amount: amount
     });
     console.log("quote resp", response.toTokenAmount);
-    return ethers.formatUnits(response.toTokenAmount, toTokenDecimals);
+    return utils.formatUnits(response.toTokenAmount, toTokenDecimals);
 }
 
 export const getCrossChainSupportedTokens = async (start: number, end: number) => {
@@ -141,12 +136,15 @@ export const getSupportedTokensByChainId = async (chainId: number, start: number
 }
 
 export const getTokenByNameOrSymbol = async (chainId: number, nameOrSymbol: string) => {
-    const url = `https://api.1inch.dev/token/v1.2/${chainId}/search?query=${nameOrSymbol}&only_positive_rating=true`;
+    const url = `https://api.1inch.dev/token/v1.2/${chainId}/search`;
     const config = {
         headers: {
             "Authorization": `Bearer ${process.env.ONEINCH_API_KEY}`
         },
-        params: {},
+        params: {
+            query: nameOrSymbol,
+            only_positive_rating: true
+        },
         paramsSerializer: {
             indexes: null
         }

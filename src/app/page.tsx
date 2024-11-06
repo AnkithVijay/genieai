@@ -139,7 +139,9 @@ export default function Home() {
     setInputMessage('');
 
     try {
-      const address = await RPC.getAccounts(provider);
+      const address = "0x3Ee3Ffd237513a3477282eBA5F7c0AdF271e4aFa"
+      // await RPC.getAccounts(provider);
+      console.log("address", address);
       const systemMessages = getSystemMessages(address);
       const stream = await app.stream(
         { messages: [...systemMessages, { role: "user", content: message }] },
