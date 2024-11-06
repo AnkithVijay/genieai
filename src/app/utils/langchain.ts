@@ -4,15 +4,15 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tools/zapper";
 import { searchTool } from "../agent/tools/search";
 import { getCrossChainQuoteTool, getCrossChainSupportedTokensTool, getSameChainQuoteTool, getSupportedTokensByChainIdTool, getTokenByNameOrSymbolTool, placeCrossChainOrderTool } from "../agent/tools/oneinch";
-import { getCowSwapQuoteTool, getOrderStatusTool, signCowSwapOrderTool } from "../agent/tools/cowswap";
+import { getCowSwapQuoteTool, getOrderStatusTool, searchCowTokenBySymbolToolAndChainId, signCowSwapOrderTool } from "../agent/tools/cowswap";
 
 const zapperTools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
-const oneInchTools = [getCrossChainQuoteTool, getSameChainQuoteTool, getTokenByNameOrSymbolTool];
+// const oneInchTools = [getCrossChainQuoteTool, getSameChainQuoteTool, getTokenByNameOrSymbolTool];
 const searchTools = [searchTool];
-const cowswapTools = [getCowSwapQuoteTool, signCowSwapOrderTool, getOrderStatusTool];
+const cowswapTools = [getCowSwapQuoteTool, signCowSwapOrderTool, getOrderStatusTool, searchCowTokenBySymbolToolAndChainId];
 
 
-const tools = [...zapperTools, ...oneInchTools, ...searchTools, ...cowswapTools];
+const tools = [...zapperTools, ...searchTools, ...cowswapTools];
 
 const toolNode = new ToolNode(tools);
 

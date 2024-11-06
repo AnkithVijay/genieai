@@ -4,6 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk';
 import { getCowSwapQuote, signCowSwapOrder, getOrderStatus } from "@/app/utils/cowswap";
 import { ethers } from "ethers";
 import { JsonRpcSigner, JsonRpcProvider } from "@ethersproject/providers";
+import { getCowTokenByAddress, getCowTokenByChainId, getCowTokenBySymbol } from "@/app/utils/cowswapTokens";
 
 
 const coswapChainList = {
@@ -16,9 +17,14 @@ export const getCowSwapQuoteTool = tool(
     async ({ chainId, sellToken, buyToken, sellAmount, sellTokenDecimals, address }) => {
         console.log("address", address);
         console.log("address", sellTokenDecimals);
+        console.log("address", sellAmount)
         try {
             // Convert the amount to the correct decimal format
-            const formattedAmount = ethers.utils.formatUnits(sellAmount, sellTokenDecimals).toString();
+            const formattedAmount = ethers.utils.parseUnits(sellAmount, sellTokenDecimals).toString();
+
+            console.log("sell token", sellToken);
+            console.log("buy token", buyToken);
+            console.log("formatted amount", formattedAmount);
 
             // Mock signer for quote (actual signer should be passed in production)
             // const provider = new JsonRpcProvider("https://arbitrum.llamarpc.com	");
@@ -99,5 +105,62 @@ export const getOrderStatusTool = tool(
             orderId: z.string().describe("The unique identifier of the CowSwap order"),
         }),
         description: "Get the status and trade information for a CowSwap order",
+    }
+);
+
+// Add new tools for searching tokens locally
+export const searchCowTokenByAddressTool = tool(
+    async ({ address }) => {
+        try {
+            const token = await getCowTokenByAddress(address);
+            return token ? JSON.stringify(token) : "Token not found";
+        } catch (error: any) {
+            return `Error searching token by address: ${error.message}`;
+        }
+    },
+    {
+        name: "search_cow_token_by_address",
+        schema: z.object({
+            address: z.string().describe("The token address to search for"),
+        }),
+        description: "Searches for a token in the local CoW Protocol token list by address",
+    }
+);
+
+export const searchCowTokenBySymbolToolAndChainId = tool(
+    async ({ symbol, chainId }) => {
+        try {
+            const token = await getCowTokenBySymbol(symbol, chainId);
+            return token ? JSON.stringify(token) : "Token not found";
+        } catch (error: any) {
+            return `Error searching token by symbol: ${error.message}`;
+        }
+    },
+    {
+        name: "search_cow_token_by_symbol",
+        schema: z.object({
+            symbol: z.string().describe("The token symbol to search for"),
+            chainId: z.number().describe('the chain id of the token')
+        }),
+        description: "Searches for a token in the local CoW Protocol token list by symbol",
+    }
+);
+
+// Update existing tool to use local function
+export const getCowSupportedTokensTool = tool(
+    async ({ chainId }) => {
+        try {
+            const tokens = await getCowTokenByChainId(chainId);
+            return JSON.stringify(tokens);
+        } catch (error: any) {
+            return `Error getting supported tokens: ${error.message}`;
+        }
+    },
+    {
+        name: "get_cow_supported_tokens",
+        schema: z.object({
+            chainId: z.number().describe("The chain ID to get supported tokens for"),
+        }),
+        description: "Gets the list of supported tokens on CoW Protocol for a specific chain from local token list",
     }
 );

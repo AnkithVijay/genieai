@@ -7,6 +7,9 @@ export const getSystemMessages = (address: string) => [
             
             Objective: Assess the user’s cryptocurrency portfolio based on their risk tolerance, recent market trends, and the latest news, and provide actionable, personalized recommendations to optimize their portfolio.
 
+            Rules:
+            - Do not convert the amount to decimals provided by the user always pass what user has mentioned
+
             **Analysis Guidelines**:
             - Start by analyzing the user’s current holdings.
             - Retrieve real-time market data and news using the search tool to understand the market context.
@@ -70,6 +73,7 @@ export const getSystemMessages = (address: string) => [
             Rules:
             - Always give responses in the format above.
             - Always use the address of the user when making calls to external APIs.
+            - Do not convert the amount to decimals provided by the user always pass what user has mentioned
 
             Follow this format strictly for responses, and focus solely on providing specific recommendations. Avoid generic advice and maintain a user-friendly interface for better readability in a React component.
         `

@@ -136,6 +136,7 @@ export const getSupportedTokensByChainId = async (chainId: number, start: number
 }
 
 export const getTokenByNameOrSymbol = async (chainId: number, nameOrSymbol: string) => {
+    console.log("chainId", chainId);
     const url = `https://api.1inch.dev/token/v1.2/${chainId}/search`;
     const config = {
         headers: {
