@@ -4,21 +4,21 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tools/zapper";
 import { searchTool } from "../agent/tools/search";
 import { getCrossChainQuoteTool, getCrossChainSupportedTokensTool, getSameChainQuoteTool, getSupportedTokensByChainIdTool, getTokenByNameOrSymbolTool, placeCrossChainOrderTool } from "../agent/tools/oneinch";
-import { getCowSwapQuoteTool, getOrderStatusTool, searchCowTokenBySymbolToolAndChainId, signCowSwapOrderTool } from "../agent/tools/cowswap";
+import { getCowSupportedTokensTool, getCowSwapQuoteTool, getOrderStatusTool, searchCowTokenBySymbolToolAndChainId, signCowSwapOrderTool } from "../agent/tools/cowswap";
 
 const zapperTools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
 // const oneInchTools = [getCrossChainQuoteTool, getSameChainQuoteTool, getTokenByNameOrSymbolTool];
-const searchTools = [searchTool];
-const cowswapTools = [getCowSwapQuoteTool, signCowSwapOrderTool, getOrderStatusTool, searchCowTokenBySymbolToolAndChainId];
+// const searchTools = [searchTool];
+const cowswapTools = [getCowSwapQuoteTool, signCowSwapOrderTool, getOrderStatusTool, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool];
 
 
-const tools = [...zapperTools, ...searchTools, ...cowswapTools];
+const tools = [...zapperTools, ...cowswapTools];
 
 const toolNode = new ToolNode(tools);
 
 const model = new ChatOpenAI({
     model: "gpt-4o-mini",
-    temperature: 0.7,
+    temperature: 0,
     apiKey: process.env.OPENAI_API_KEY,
 }).bindTools(tools);
 

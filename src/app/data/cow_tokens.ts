@@ -1374,5 +1374,61 @@ export const cowTokens = [
         "decimals": 18,
         "chainId": 42161,
         "logoURI": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/42161/0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04/logo.png"
+    },
+    {
+        "name": "Wrapped Ether",
+        "chainId": 11155111,
+        "symbol": "WETH",
+        "decimals": 18,
+        "address": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
+        "logoURI": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/1/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/logo.png"
+    },
+    {
+        "name": "Uniswap",
+        "chainId": 11155111,
+        "symbol": "UNI",
+        "decimals": 18,
+        "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        "logoURI": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/1/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984/logo.png"
+    },
+    {
+        "name": "USDC (test)",
+        "chainId": 11155111,
+        "symbol": "USDC",
+        "decimals": 18,
+        "address": "0xbe72E441BF55620febc26715db68d3494213D8Cb",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png"
+    },
+    {
+        "name": "GNO (test)",
+        "chainId": 11155111,
+        "symbol": "GNO",
+        "decimals": 18,
+        "address": "0xd3f3d46FeBCD4CdAa2B83799b7A5CdcB69d135De",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6810e776880C02933D47DB1b9fc05908e5386b96/logo.png"
+    },
+    {
+        "name": "DAI (test)",
+        "chainId": 11155111,
+        "symbol": "DAI",
+        "decimals": 18,
+        "address": "0xB4F1737Af37711e9A5890D9510c9bB60e170CB0D",
+        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png"
+    },
+    {
+        "name": "CoW Protocol Token",
+        "chainId": 11155111,
+        "symbol": "COW",
+        "decimals": 18,
+        "address": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
+        "logoURI": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/11155111/0x0625afb445c3b6b7b929342a04a22599fd5dbb59/logo.png"
+    },
+    {
+        "name": "Tether USD",
+        "chainId": 11155111,
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x58eb19ef91e8a6327fed391b51ae1887b833cc91",
+        "logoURI": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/11155111/0x58eb19ef91e8a6327fed391b51ae1887b833cc91/logo.png"
     }
 ]
