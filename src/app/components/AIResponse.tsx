@@ -1,14 +1,102 @@
 import React from 'react';
+import { AIResponseFormat, validateResponseFormat } from '../utils/responseHelpers';
 
-type Section = {
+type BaseSection = {
   type: string;
   title?: string;
   content?: string | string[];
-  data?: any;
-  actions?: any[];
-  tokens?: any[];
-  examples?: string[];
 };
+
+type TextSection = BaseSection & {
+  type: 'text' | 'markdown';
+  content: string;
+};
+
+type TableSection = BaseSection & {
+  type: 'table';
+  content: Array<Array<string>>;
+};
+
+type ListSection = BaseSection & {
+  type: 'list';
+  content: string[];
+};
+
+type LinkSection = BaseSection & {
+  type: 'link';
+  content: string;
+  title?: string;
+};
+
+type ImageSection = BaseSection & {
+  type: 'image';
+  content: string;
+  title?: string;
+};
+
+type FunctionCallSection = {
+  type: 'FUNCTION_CALL';
+  function: string;
+  params: {
+    amount?: string | number;
+    chainId?: number;
+    [key: string]: any;
+  };
+  display: {
+    title: string;
+    description: string;
+    from_token?: string;
+    to_token?: string;
+    amount?: string;
+    details?: string;
+  };
+};
+
+type PortfolioSection = BaseSection & {
+  type: 'portfolio';
+  title?: string;
+  data?: {
+    tokens?: Array<{
+      symbol: string;
+      icon?: string;
+      balance: string;
+      value_usd: string;
+    }>;
+  };
+};
+
+type TokenListSection = BaseSection & {
+  type: 'token_list';
+  title?: string;
+  tokens?: Array<{
+    symbol: string;
+    name: string;
+    address: string;
+    logoURI?: string;
+  }>;
+};
+
+type CapabilitiesSection = BaseSection & {
+  type: 'capabilities';
+  content: string[];
+};
+
+type ExamplesSection = BaseSection & {
+  type: 'examples';
+  examples: string[];
+};
+
+type Section =
+  | TextSection
+  | TableSection
+  | ListSection
+  | LinkSection
+  | ImageSection
+  | FunctionCallSection
+  | PortfolioSection
+  | TokenListSection
+  | CapabilitiesSection
+  | ExamplesSection;
 
 type ParsedContent = {
   sections: Section[];
@@ -22,10 +110,9 @@ interface AIResponseProps {
     isStreaming?: boolean;
   }>;
   handleSendMessage: (message: string) => void;
-  handleSwap: (action: any) => void;
 }
 
-const PortfolioSection = ({ title, data, handleSwap }: { title?: string, data?: any, handleSwap: (action: any) => void }) => (
+const PortfolioSection = ({ title, data }: { title?: string, data?: any }) => (
   <div className="flex flex-col gap-4 p-4 bg-white rounded-lg shadow">
     <h3 className="text-lg font-bold">{title || "Portfolio Overview"}</h3>
     <div className="grid grid-cols-1 gap-4">
@@ -49,67 +136,109 @@ const PortfolioSection = ({ title, data, handleSwap }: { title?: string, data?: 
   </div>
 );
 
-export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMessage, handleSwap }) => {
-  // Helper function to safely parse JSON or return existing object
-  const safeJsonParse = (str: string) => {
-    if (typeof str === 'object') return str;
+export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMessage }) => {
+
+  const safeJsonParse = (str: string): AIResponseFormat => {
+    if (typeof str === 'object') return validateResponseFormat(str);
     try {
-      // Remove any backticks and "json" text that might be in the response
       const cleanStr = str.replace(/```json\n?|\n?```/g, '').trim();
-      return JSON.parse(cleanStr);
+      return validateResponseFormat(JSON.parse(cleanStr));
     } catch (e) {
-      console.error('Failed to parse JSON:', e);
-      return { sections: [{ type: 'text', content: str }] };
+      return {
+        sections: [{ type: 'text', content: str }]
+      };
     }
   };
 
-  const renderSection = (section: Section, isStreaming: boolean, handleSwap: (action: any) => void) => {
+  const renderSection = (section: Section, isStreaming: boolean) => {
     switch (section.type) {
-      case 'portfolio':
-        return <PortfolioSection title={section.title} data={section.data} handleSwap={handleSwap} />;
+      case 'text':
+      case 'markdown':
+        return (
+          <div className="bg-white p-4 rounded-lg">
+            <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
+          </div>
+        );
 
-      case 'analysis':
+      case 'table':
+        return (
+          <div className="bg-white p-4 rounded-lg overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              {Array.isArray(section.content) && section.content.map((row, rowIdx) => (
+                <tr key={rowIdx} className={rowIdx === 0 ? 'bg-gray-50' : 'bg-white'}>
+                  {Array.isArray(row) && row.map((cell, cellIdx) => (
+                    rowIdx === 0 ? (
+                      <th key={cellIdx} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {cell}
+                      </th>
+                    ) : (
+                      <td key={cellIdx} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {cell}
+                      </td>
+                    )
+                  ))}
+                </tr>
+              ))}
+            </table>
+          </div>
+        );
+
+      case 'list':
+        return (
+          <div className="bg-white p-4 rounded-lg">
+            <ul className="list-disc list-inside space-y-2">
+              {Array.isArray(section.content) && section.content.map((item, idx) => (
+                <li key={idx} className="text-gray-700">{item}</li>
+              ))}
+            </ul>
+          </div>
+        );
+
+      case 'link':
+        return (
+          <div className="bg-white p-4 rounded-lg">
+            <a
+              href={section.content as string}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-600 underline"
+            >
+              {section.title || section.content}
+            </a>
+          </div>
+        );
+
+      case 'image':
+        return (
+          <div className="bg-white p-4 rounded-lg">
+            <img
+              src={section.content as string}
+              alt={section.title || 'AI Response Image'}
+              className="max-w-full h-auto rounded"
+            />
+          </div>
+        );
+
+      case 'FUNCTION_CALL':
         return (
           <div className="flex flex-col gap-2 bg-white p-4 rounded-lg">
-            {section.title && (
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                {section.title}
-                {isStreaming && (
-                  <span className="inline-block animate-pulse">
-                    <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
-                    <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-1"></span>
-                    <span className="inline-block w-2 h-2 bg-blue-500 rounded-full"></span>
-                  </span>
+            <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+              <div className="flex flex-col">
+                <span className="font-medium">{section.display?.title}</span>
+                <span className="text-sm text-gray-500">{section.display?.description}</span>
+                {section.display?.details && (
+                  <span className="text-sm text-gray-500">{section.display.details}</span>
                 )}
-              </h3>
-            )}
-            {section.content && <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>}
+              </div>
+              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Execute
+              </button>
+            </div>
           </div>
         );
 
-      case 'action':
-        return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg">
-            {section.title && <h3 className="text-lg font-bold">{section.title}</h3>}
-            {section.actions?.map((action, actionIdx) => (
-              <div key={actionIdx} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {action.type}: {action.from_token} → {action.to_token}
-                  </span>
-                  <span className="text-sm text-gray-500">Amount: {action.amount}</span>
-                  <span className="text-sm text-gray-500">{action.reason}</span>
-                </div>
-                <button
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  onClick={() => handleSwap(action)}
-                >
-                  Execute
-                </button>
-              </div>
-            ))}
-          </div>
-        );
+      case 'portfolio':
+        return <PortfolioSection title={section.title} data={section.data} />;
 
       case 'token_list':
         return (
@@ -127,13 +256,6 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
                 <span className="text-sm">{token.address}</span>
               </div>
             ))}
-          </div>
-        );
-
-      case 'text':
-        return (
-          <div className="bg-white p-4 rounded-lg">
-            <p className="text-gray-700 whitespace-pre-wrap">{section.content}</p>
           </div>
         );
 
@@ -197,7 +319,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
                   const parsedContent = safeJsonParse(message.content) as ParsedContent;
                   return parsedContent.sections.map((section, idx) => (
                     <div key={idx}>
-                      {renderSection(section, message.isStreaming || false, handleSwap)}
+                      {renderSection(section, message.isStreaming || false)}
                     </div>
                   ));
                 })()}

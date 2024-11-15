@@ -1,20 +1,26 @@
 'use client'
-import React, { useContext, useState } from 'react';
-import { app } from './utils/langchain';
+import React, { useContext, useEffect, useState } from 'react';
 import { getSystemMessages } from "./utils/prompt";
 import { v4 as uuidv4 } from "uuid";
 import { AIResponse } from './components/AIResponse';
 import { useWeb3Auth } from './providers/web3Init';
 import { useContract } from './providers/ContractContext';
+import { useLangChain } from './providers/langchain';
 
 export default function Home() {
 
   const [messages, setMessages] = React.useState<{ role: 'user' | 'ai', content: string, type: string, isStreaming?: boolean }[]>([]);
   const [inputMessage, setInputMessage] = React.useState('');
   const [threadId, setThreadId] = useState(uuidv4());
+  const [oldThreadId, setOldThreadId] = useState<string | undefined>(undefined);
 
   const { provider, login, logout, getUserInfo, loggedIn, getBalance, getAccounts, getChainId } = useWeb3Auth();
-  const { getSigner, writeContract, readContract } = useContract();
+  const { getSigner, writeContract, readContract, wrapEth, unwrapEth } = useContract();
+  const { app } = useLangChain();
+
+  useEffect(() => {
+    setOldThreadId(threadId);
+  }, [threadId]);
 
 
   const handleSendMessage = async (message: string) => {
@@ -27,6 +33,7 @@ export default function Home() {
       const address = await getAccounts();
       const balance = await getBalance();
       const chainId = await getChainId();
+
       const systemMessages = getSystemMessages(address, balance, chainId);
 
       setMessages(prev => [...prev, {
@@ -42,8 +49,10 @@ export default function Home() {
         isStreaming: true
       }]);
 
+      const messagesToSend = oldThreadId ? [...systemMessages, { role: "user", content: message }] : [{ role: "user", content: message }];
+
       const stream = await app.stream(
-        { messages: [...systemMessages, { role: "user", content: message }] },
+        { messages: messagesToSend },
         {
           streamMode: "values",
           configurable: { thread_id: threadId }
@@ -91,10 +100,6 @@ export default function Home() {
     }
   };
 
-  const handleSwap = async (action: any) => {
-    // Implement swap execution logic here
-  };
-
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col w-full max-w-2xl gap-8 row-start-2">
@@ -124,7 +129,7 @@ export default function Home() {
           )}
         </div>
 
-        <AIResponse messages={messages} handleSendMessage={handleSendMessage} handleSwap={handleSwap} />
+        <AIResponse messages={messages} handleSendMessage={handleSendMessage} />
 
         <form
           onSubmit={(e) => {

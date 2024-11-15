@@ -3,6 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ContractProviderWrapper } from './providers/ContractContext';
 import { Web3Provider } from './providers/web3Init';
+import { LangChainProvider } from "./providers/langchain";
+import { WrappedEtherProvider } from "./providers/WrappedEther";
+import { CowSwapProvider } from "./providers/CowSwap";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,7 +33,13 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Web3Provider>
           <ContractProviderWrapper>
-            {children}
+            <WrappedEtherProvider>
+              <CowSwapProvider>
+                <LangChainProvider>
+                  {children}
+                </LangChainProvider>
+              </CowSwapProvider>
+            </WrappedEtherProvider>
           </ContractProviderWrapper>
         </Web3Provider>
       </body>

@@ -3,11 +3,15 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { ethers } from 'ethers';
 import { useWeb3Auth } from './web3Init';
+import { getWrappedEthAddress } from '../utils/utils';
+import { WETH_ABI } from '../abi/weth';
 
 interface ContractContextType {
     getSigner: () => Promise<ethers.Signer | undefined>;
     writeContract: (contractAddress: string, contractABI: any[], methodName: string, ...args: any[]) => Promise<any>;
     readContract: (contractAddress: string, contractABI: any[], methodName: string, ...args: any[]) => Promise<any>;
+    wrapEth: (amount: string, chainId: number) => Promise<ethers.Transaction | undefined>;
+    unwrapEth: (amount: string, chainId: number) => Promise<ethers.Transaction | undefined>;
 }
 
 const ContractContext = createContext<ContractContextType | null>(null);
@@ -48,8 +52,28 @@ export function ContractProviderWrapper({ children }: ContractProviderProps) {
         return await contract.functions[methodName](...args);
     }
 
+    const wrapEth = async (amount: string, chainId: number) => {
+        console.log("wrapEth", amount, chainId);
+        if (!provider || !chainId || !amount) return;
+        const signer = await getSigner();
+        const wrappedEthAddress = getWrappedEthAddress(chainId);
+        const contract = new ethers.Contract(wrappedEthAddress, WETH_ABI, signer);
+        const tx = await contract.deposit({ value: ethers.utils.parseEther(amount) });
+        return tx;
+    }
+
+    const unwrapEth = async (amount: string, chainId: number) => {
+        console.log("unwrapEth", amount, chainId);
+        if (!provider || !chainId || !amount) return;
+        const signer = await getSigner();
+        const wrappedEthAddress = getWrappedEthAddress(chainId);
+        const contract = new ethers.Contract(wrappedEthAddress, WETH_ABI, signer);
+        const tx = await contract.withdraw(ethers.utils.parseEther(amount));
+        return tx;
+    }
+
     return (
-        <ContractContext.Provider value={{ getSigner, writeContract, readContract }}>
+        <ContractContext.Provider value={{ getSigner, writeContract, readContract, wrapEth, unwrapEth }}>
             {children}
         </ContractContext.Provider>
     );
