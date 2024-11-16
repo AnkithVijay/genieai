@@ -17,6 +17,7 @@ interface Web3ContextType {
     logout: () => Promise<void>;
     getUserInfo: () => Promise<void>;
     loggedIn: boolean;
+    address: string | null;
     getBalance: () => Promise<string>;
     getAccounts: () => Promise<string>;
     getChainId: () => Promise<number>;
@@ -36,6 +37,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     const [provider, setProvider] = useState<IProvider | null>(null);
     const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [address, setAddress] = useState<string | null>(null);
 
     const clientId =
         "BGZCvBJX8rGEZBWoGudKfqscNxmlaw6FNr7u5ni6T9iWaN-ZmST-jIhOSH1QA7nX0kXlaltJc_HmJIOiYe1T678";
@@ -77,6 +79,10 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
                 if (web3authInstance.connected) {
                     setLoggedIn(true);
                     setProvider(web3authInstance.provider);
+                    if (web3authInstance.provider) {
+                        const accounts = await RPC.getAccounts(web3authInstance.provider);
+                        setAddress(accounts[0]);
+                    }
                 }
             } catch (error) {
                 console.error(error);
@@ -168,6 +174,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
                 logout,
                 getUserInfo,
                 loggedIn,
+                address,
                 getBalance,
                 getAccounts,
                 getChainId,

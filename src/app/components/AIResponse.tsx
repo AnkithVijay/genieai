@@ -12,7 +12,7 @@ interface AIResponseProps {
 }
 
 interface Section {
-  type: 'text' | 'analysis' | 'markdown' | 'table' | 'list' | 'link' | 'image' | 'FUNCTION_CALL' | 'portfolio' | 'token_list' | 'capabilities' | 'examples' | 'token_balance' | 'function';
+  type: 'text' | 'analysis' | 'ensName' | 'markdown' | 'table' | 'list' | 'link' | 'image' | 'FUNCTION_CALL' | 'portfolio' | 'token_list' | 'capabilities' | 'examples' | 'token_balance' | 'function';
   content: any;
   title?: string;
   display?: {
@@ -100,14 +100,27 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
           </div>
         );
 
+      case 'ensName':
+        return (
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm justify-start items-start text-left">
+            <div className="flex items-center gap-2">
+              <img src={section.content.image} alt={section.content.name} className="w-10 h-10 rounded-full" />
+              <div className='flex flex-col'>
+                <span className="font-medium">{section.content.name}</span>
+                <span className="text-xs text-gray-500">{section.content.address.slice(0, 8)}...{section.content.address.slice(-8)}</span>
+              </div>
+            </div>
+          </div>
+        );
+
       case 'token_balance':
         return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
+          <div className=" grid grid-cols-2 gap-2 bg-white p-4 rounded-lg shadow-sm justify-start items-center text-left">
             <div className="flex items-center gap-2">
               <img src={section.content.image} alt={section.content.symbol} className="w-8 h-8 rounded-full" />
               <span className="font-medium">{section.content.symbol}</span>
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="font-semibold text-gray-500">
               {parseFloat(section.content.balance).toFixed(6)} {section.content.symbol}
             </div>
           </div>
@@ -115,7 +128,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'function':
         return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm justify-start items-start text-left">
             <div className="flex items-center gap-2">
               <span className="font-medium">{section.content.function}</span>
               <span className="text-sm text-gray-500">({section.content.args.join(', ')})</span>
@@ -125,7 +138,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'FUNCTION_CALL':
         return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm justify-start items-start text-left">
             <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-100">
               <div className="flex flex-col gap-1">
                 <span className="font-medium text-blue-900">
@@ -171,7 +184,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'token_list':
         return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm justify-start items-start text-left">
             {section.title && (
               <h3 className="text-lg font-bold text-gray-900 mb-2">{section.title}</h3>
             )}

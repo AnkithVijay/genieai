@@ -32,13 +32,11 @@ export function LangChainProvider({ children }: { children: React.ReactNode }) {
     const { wrapEth, unwrapEth, wethBalance } = useWrappedEther();
     const { getEnsName, getEnsAddress, sendAmount } = useEnsProvider();
     const { getReadContractABI, getWriteContractABI, readContract, writeContract } = useContractInteraction();
-    // const { getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool } = useOneinch();
 
     const zapperTools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
     const wethTools = [wrapEth, unwrapEth, wethBalance];
     const ensTools = [getEnsName, getEnsAddress, sendAmount];
     const contractTools = [getReadContractABI, getWriteContractABI, readContract, writeContract];
-    // const oneinchTools = [getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool];
     const cowswapTools = [getCowSwapQuote, getTokenImage, approveToken, checkApproval, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, getTokenBalance];
 
     const tools = [...cowswapTools, ...ensTools, ...wethTools, ...zapperTools, ...contractTools];

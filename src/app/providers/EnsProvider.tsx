@@ -4,6 +4,7 @@ import { useWeb3Auth } from './web3Init';
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
 import RPC from '../utils/ethersRPC';
+import { ethers } from 'ethers';
 
 interface EnsProviderContextType {
     getEnsName: any;
@@ -92,6 +93,8 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
 
                 const data = await response.json();
                 const domain = data.data?.domains[0];
+                const _provider = new ethers.providers.JsonRpcProvider("https://eth.blockscout.com/api/eth-rpc");
+                const image = await _provider.getAvatar(domain.resolvedAddress?.id);
 
                 if (!domain) {
                     return { error: "ENS domain not found" };
@@ -99,7 +102,7 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
 
                 return {
                     address: domain.resolvedAddress?.id,
-                    avatar: null
+                    avatar: image
                 };
             } catch (error) {
                 console.log("Error getting ENS address:", error);

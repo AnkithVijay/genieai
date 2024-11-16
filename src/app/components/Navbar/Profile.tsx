@@ -1,5 +1,7 @@
 "use client";
 import { cowTokens } from "@/app/data/cow_tokens";
+import { useWeb3Auth } from "@/app/providers/web3Init";
+import { getActiveOrders } from "@/app/utils/cowswaputils";
 import {
   Sidebar,
   SidebarContent,
@@ -13,9 +15,23 @@ import {
 } from "@/components/ui/sidebar";
 import { Copy, QrCode } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export function Profile() {
   const amounts = [104, 127, 230, 140, 130, 100, 653, 364, 389, 620];
+
+  const { address } = useWeb3Auth();
+
+  // useEffect(() => {
+  //   getCowSwapOrders();
+  // }, [address]);
+
+  // const getCowSwapOrders = async () => {
+  //   if (!address) return;
+  //   const orders = await getActiveOrders(address);
+  //   console.log(orders);
+  // };
+
   return (
     <Sidebar side="right" variant="floating">
       <SidebarContent className="p-4 flex flex-col gap-8">
@@ -25,7 +41,7 @@ export function Profile() {
               <h2 className="text-xs">Networth</h2>
               <div className="text-4xl font-black">$10,000</div>
               <div className="flex flex-row gap-2 justify-start items-center text-xs">
-                <h3>0xdce89DD...9548a26E</h3>
+                <h3>vijayankith.eth</h3>
                 <button>
                   <Copy size={12} />
                 </button>

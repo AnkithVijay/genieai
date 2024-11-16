@@ -8,7 +8,8 @@ export const getSystemMessages = (address: string, balance: string, chainId: num
      ETH Balance: ${balance}
 
      Response Format:
-     Always respond with a clean JSON object (no markdown). Example:
+     Always respond with a clean JSON object (no markdown). 
+     Example:
      {
        "sections": [
          {
@@ -20,13 +21,21 @@ export const getSystemMessages = (address: string, balance: string, chainId: num
            }
          },
          {
-           "type": "text",
-           "content": "The address for vijayankith.eth is 0x3ee3ffd237513a3477282eba5f7c0adf271e4afa"
+         "type": "ensName",
+         "content": {
+             name: "vijayankith.eth",
+             address: "0x3ee3ffd237513a3477282eba5f7c0adf271e4afa",
+             image: "https://assets.coingecko.com/coins/images/279/large/ethereum.png?1796501422"
+            }
          },
+         {
+           "type": "text",
+           "content": "The address for vijayankith.eth is 0x3ee3...e4afa"
+         }
          {
            "type": "link",
            "content": "https://eth-sepolia.blockscout.com/tx/0x3ee3ffd237513a3477282eba5f7c0adf271e4afa",
-           "title": "View on Blockscout"
+           "title": "View Transaction"
          },
          {
           "type": "function",
