@@ -10,6 +10,7 @@ import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { getDefaultExternalAdapters } from "@web3auth/default-evm-adapter";
 import { Web3Auth, Web3AuthOptions } from "@web3auth/modal";
 import RPC from "../utils/ethersRPC";
+import { useRouter } from "next/navigation";
 
 interface Web3ContextType {
     provider: IProvider | null;
@@ -38,6 +39,8 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
     const [loggedIn, setLoggedIn] = useState(false);
     const [address, setAddress] = useState<string | null>(null);
+
+    const router = useRouter();
 
     const clientId =
         "BGZCvBJX8rGEZBWoGudKfqscNxmlaw6FNr7u5ni6T9iWaN-ZmST-jIhOSH1QA7nX0kXlaltJc_HmJIOiYe1T678";
@@ -109,9 +112,11 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
             await web3auth.logout();
             setProvider(null);
             setLoggedIn(false);
+            router.push("/");
         } catch (error) {
-            alert("Error logging out");
-            console.error(error);
+            // alert("Error logging out");
+            // console.error(error);
+            router.push("/");
         }
     };
 

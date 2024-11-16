@@ -1,3 +1,5 @@
+"use client";
+
 import { MessageSquarePlus, Power } from "lucide-react";
 import Image from "next/image";
 
@@ -11,8 +13,10 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useWeb3Auth } from "@/app/providers/web3Init";
 
 export function Navbar() {
+  const { logout } = useWeb3Auth();
   return (
     <Sidebar variant="floating">
       <SidebarHeader className="p-4 flex justify-center items-center border-b border-gray-200 gap-2">
@@ -52,7 +56,10 @@ export function Navbar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="p-0 m-0">
-        <button className="border rounded-lg p-4 m-4 text-sm flex flex-row justify-center items-center gap-2 hover:bg-red-600 hover:text-white">
+        <button
+          onClick={logout}
+          className="border rounded-lg p-4 m-4 text-sm flex flex-row justify-center items-center gap-2 hover:bg-red-600 hover:text-white"
+        >
           <Power size={16} /> Logout
         </button>
       </SidebarFooter>
