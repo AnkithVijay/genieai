@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { ContractProviderWrapper } from './providers/ContractContext';
 import { Web3Provider } from './providers/web3Init';
 import { LangChainProvider } from "./providers/langchain";
 import { WrappedEtherProvider } from "./providers/WrappedEther";
 import { CowSwapProvider } from "./providers/CowSwap";
+import { OneinchProvider } from "./providers/Oneinch";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,15 +32,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Web3Provider>
-          <ContractProviderWrapper>
-            <WrappedEtherProvider>
-              <CowSwapProvider>
+          <WrappedEtherProvider>
+            <CowSwapProvider>
+              <OneinchProvider>
                 <LangChainProvider>
                   {children}
                 </LangChainProvider>
-              </CowSwapProvider>
-            </WrappedEtherProvider>
-          </ContractProviderWrapper>
+              </OneinchProvider>
+            </CowSwapProvider>
+          </WrappedEtherProvider>
         </Web3Provider>
       </body>
     </html>

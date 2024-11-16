@@ -80,17 +80,27 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const login = async () => {
-        if (!web3auth) return;
-        const web3authProvider = await web3auth.connect();
-        setProvider(web3authProvider);
-        setLoggedIn(true);
+        try {
+            if (!web3auth) return;
+            const web3authProvider = await web3auth.connect();
+            setProvider(web3authProvider);
+            setLoggedIn(true);
+        } catch (error) {
+            alert("Error logging in");
+            console.error(error);
+        }
     };
 
     const logout = async () => {
-        if (!web3auth) return;
-        await web3auth.logout();
-        setProvider(null);
-        setLoggedIn(false);
+        try {
+            if (!web3auth) return;
+            await web3auth.logout();
+            setProvider(null);
+            setLoggedIn(false);
+        } catch (error) {
+            alert("Error logging out");
+            console.error(error);
+        }
     };
 
     const getUserInfo = async () => {
@@ -98,27 +108,50 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
             console.log("Not connected to Web3Auth");
             return;
         }
-        const user = await web3auth.getUserInfo();
-        console.log(user);
+        try {
+            const user = await web3auth.getUserInfo();
+            console.log(user);
+        } catch (error) {
+            alert("Error getting user info");
+            console.error(error);
+        }
     };
 
     const getBalance = async () => {
         if (!provider) return "0";
-        const balance = await RPC.getBalance(provider);
-        if (!balance) return "0";
-        return balance;
+        try {
+            const balance = await RPC.getBalance(provider);
+            if (!balance) return "0";
+            return balance;
+        } catch (error) {
+            alert("Error getting balance");
+            console.error(error);
+            return "0";
+        }
     };
 
     const getAccounts = async () => {
         if (!provider) return;
-        const accounts = await RPC.getAccounts(provider);
-        return accounts;
+        try {
+            const accounts = await RPC.getAccounts(provider);
+            return accounts;
+        } catch (error) {
+            alert("Error getting accounts");
+            console.error(error);
+            return [];
+        }
     };
 
     const getChainId = async () => {
         if (!provider) return;
-        const chainId = await RPC.getChainId(provider);
-        return chainId;
+        try {
+            const chainId = await RPC.getChainId(provider);
+            return chainId;
+        } catch (error) {
+            alert("Error getting chain id");
+            console.error(error);
+            return 0;
+        }
     };
 
     return (

@@ -5,7 +5,7 @@ import { OrderBookApi, OrderQuoteRequest, OrderQuoteSideKindSell, UnsignedOrder,
 import { useWeb3Auth } from './web3Init';
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { getCowTokenByChainId, getCowTokenBySymbol } from '../utils/cowswapTokens';
+import { getCowTokenByAddress, getCowTokenByChainId, getCowTokenBySymbol } from '../utils/cowswapTokens';
 
 interface CowSwapContextType {
     approveToken: any;
@@ -15,6 +15,7 @@ interface CowSwapContextType {
     getOrderStatus: any;
     searchCowTokenBySymbolToolAndChainId: any;
     getCowSupportedTokensTool: any;
+    getTokenBalance: any
 }
 
 const CowSwapContext = createContext<CowSwapContextType | null>(null);
@@ -242,6 +243,51 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
         }
     );
 
+    const getTokenBalance = tool(
+        async ({ tokenAddress, userAddress, tokenDecimals }) => {
+            try {
+                if (!provider) return;
+                const erc20Abi = [
+                    {
+                        "constant": true,
+                        "inputs": [
+                            {
+                                "name": "_owner",
+                                "type": "address"
+                            }
+                        ],
+                        "name": "balanceOf",
+                        "outputs": [
+                            {
+                                "name": "balance",
+                                "type": "uint256"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    }
+                ]
+                const ethersProvider = new ethers.providers.Web3Provider(provider);
+                const contract = new ethers.Contract(tokenAddress, erc20Abi, ethersProvider);
+                const balance = await contract.balanceOf(userAddress);
+                return parseFloat(ethers.utils.formatUnits(balance, tokenDecimals));
+            } catch (e) {
+                console.log("error", e);
+                return 0;
+            }
+        },
+        {
+            name: 'getTokenBalance',
+            description: 'Get the balance of a token',
+            schema: z.object({
+                tokenAddress: z.string().describe('The address of the token'),
+                userAddress: z.string().describe('The address of the user'),
+                tokenDecimals: z.number().describe('The number of decimals of the token'),
+            })
+        }
+    )
+
     return (
         <CowSwapContext.Provider value={{
             approveToken,
@@ -250,7 +296,8 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
             signCowSwapOrder,
             getOrderStatus,
             searchCowTokenBySymbolToolAndChainId,
-            getCowSupportedTokensTool
+            getCowSupportedTokensTool,
+            getTokenBalance
         }}>
             {children}
         </CowSwapContext.Provider>

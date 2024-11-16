@@ -6,6 +6,7 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tools/zapper";
 import { useCowSwap } from './CowSwap';
 import { useWrappedEther } from './WrappedEther';
+import { useOneinch } from './Oneinch';
 
 
 interface LangChainContextType {
@@ -23,15 +24,16 @@ export const useLangChain = () => {
 };
 
 export function LangChainProvider({ children }: { children: React.ReactNode }) {
-    const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval } = useCowSwap();
+    const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval, getTokenBalance } = useCowSwap();
     const { wrapEth, unwrapEth, wethBalance } = useWrappedEther();
-
+    // const { getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool } = useOneinch();
 
     const zapperTools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
     const wethTools = [wrapEth, unwrapEth, wethBalance];
-    const cowswapTools = [getCowSwapQuote, approveToken, checkApproval, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool];
+    // const oneinchTools = [getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool];
+    const cowswapTools = [getCowSwapQuote, approveToken, checkApproval, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, getTokenBalance];
 
-    const tools = [...cowswapTools, ...wethTools];
+    const tools = [...cowswapTools, ...wethTools, ...zapperTools];
     const toolNode = new ToolNode(tools);
 
     const model = new ChatOpenAI({
