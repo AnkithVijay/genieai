@@ -1,11 +1,11 @@
 'use client'
 import React, { createContext, useContext } from 'react';
 import { ethers } from 'ethers';
-import { OrderBookApi, OrderQuoteRequest, OrderQuoteSideKindSell, UnsignedOrder, OrderSigningUtils, SigningScheme } from '@cowprotocol/cow-sdk';
+import { OrderBookApi, OrderQuoteRequest, OrderQuoteSideKindSell, UnsignedOrder, OrderSigningUtils, SigningScheme, OrderStatus } from '@cowprotocol/cow-sdk';
 import { useWeb3Auth } from './web3Init';
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { getCowTokenByAddress, getCowTokenByChainId, getCowTokenBySymbol } from '../utils/cowswapTokens';
+import { getCowTokenByAddress, getCowTokenByChainId, getCowTokenBySymbol } from '../utils/cowswaputils';
 
 interface CowSwapContextType {
     approveToken: any;
@@ -15,7 +15,8 @@ interface CowSwapContextType {
     getOrderStatus: any;
     searchCowTokenBySymbolToolAndChainId: any;
     getCowSupportedTokensTool: any;
-    getTokenBalance: any
+    getTokenBalance: any;
+    getActiveOrders: any;
 }
 
 const CowSwapContext = createContext<CowSwapContextType | null>(null);
@@ -138,9 +139,9 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
             description: 'Get a quote for a CowSwap order',
             schema: z.object({
                 chainId: z.number().describe('The chain id of the order'),
-                sellToken: z.string().describe('The address of the token to sell'),
-                buyToken: z.string().describe('The address of the token to buy'),
-                sellAmount: z.string().describe('The amount of the token to sell'),
+                sellToken: z.string().describe('The address of the token to sell, it is crypto currecny address'),
+                buyToken: z.string().describe('The address of the token to buy, it is crypto currecny address'),
+                sellAmount: z.string().describe('The amount of the token to sell in the format of 1.2345'),
                 address: z.string().describe('The address of the user making the order'),
                 sellAmountDecimals: z.number().describe('The number of decimals of the token to sell'),
             })
@@ -213,6 +214,37 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
             })
         }
     );
+
+    const getActiveOrders = tool(
+        async ({ address, chainId, offset = 0 }) => {
+            const orderBookApi = new OrderBookApi({ chainId });
+            const orders = await orderBookApi.getOrders({ owner: address, offset, limit: 10 });
+            let _activeOrders = [];
+            for (const order of orders) {
+                if (order.status === OrderStatus.OPEN) {
+                    _activeOrders.push({
+                        orderId: order.uid,
+                        sellToken: order.sellToken,
+                        buyToken: order.buyToken,
+                        sellAmount: order.sellAmount,
+                        buyAmount: order.buyAmount,
+                        feeAmount: order.feeAmount,
+                        status: order.status,
+                    });
+                }
+            }
+            return _activeOrders;
+        },
+        {
+            name: 'getActiveOrders',
+            description: 'Get the active orders of a user',
+            schema: z.object({
+                address: z.string().describe('The address of the user'),
+                chainId: z.number().describe('The chain id of the orders'),
+                offset: z.number().describe('The offset of the orders, limit is set to 10 by default'),
+            })
+        }
+    )
 
     const searchCowTokenBySymbolToolAndChainId = tool(
         async ({ chainId, symbol }) => {
@@ -297,7 +329,8 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
             getOrderStatus,
             searchCowTokenBySymbolToolAndChainId,
             getCowSupportedTokensTool,
-            getTokenBalance
+            getTokenBalance,
+            getActiveOrders
         }}>
             {children}
         </CowSwapContext.Provider>

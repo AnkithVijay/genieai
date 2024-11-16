@@ -39,8 +39,9 @@ export const getSystemMessages = (address: string, balance: string, chainId: num
 
     Always ensure:
     1. Token approval is checked and completed if needed.
-    2. Transaction details and risks are clearly explained.
-    3. Transaction statuses are verified using Blockscout.
+    2. Make sure to confirm with the user before making any transactions.like approval, swaps, wrapping, unwrapping, etc.
+    3. Transaction details and risks are clearly explained.
+    4. Transaction statuses are verified using Blockscout.
 
     Keep responses concise, user-friendly, and conversational while avoiding unnecessary jargon.`
   }

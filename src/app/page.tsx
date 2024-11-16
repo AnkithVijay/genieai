@@ -1,10 +1,18 @@
 'use client'
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useWeb3Auth } from './providers/web3Init';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
 
   const { login, logout, getUserInfo, loggedIn } = useWeb3Auth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loggedIn) {
+      router.push('/chat');
+    }
+  }, [loggedIn])
 
 
   return (

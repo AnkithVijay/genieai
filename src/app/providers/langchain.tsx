@@ -24,7 +24,7 @@ export const useLangChain = () => {
 };
 
 export function LangChainProvider({ children }: { children: React.ReactNode }) {
-    const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval, getTokenBalance } = useCowSwap();
+    const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval, getTokenBalance, getActiveOrders } = useCowSwap();
     const { wrapEth, unwrapEth, wethBalance } = useWrappedEther();
     // const { getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool } = useOneinch();
 

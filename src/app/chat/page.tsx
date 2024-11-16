@@ -11,15 +11,10 @@ export default function Home() {
     const [messages, setMessages] = React.useState<{ role: 'user' | 'ai', content: string, type: string, isStreaming?: boolean }[]>([]);
     const [inputMessage, setInputMessage] = React.useState('');
     const [threadId, setThreadId] = useState(uuidv4());
-    const [oldThreadId, setOldThreadId] = useState<string | undefined>(undefined);
+    const [initialized, setInitialized] = useState(false);
 
     const { provider, login, logout, getUserInfo, loggedIn, getBalance, getAccounts, getChainId } = useWeb3Auth();
     const { app } = useLangChain();
-
-    useEffect(() => {
-        setOldThreadId(threadId);
-    }, [threadId]);
-
 
     const handleSendMessage = async (message: string) => {
         if (!message.trim() || !provider) return;
@@ -47,7 +42,8 @@ export default function Home() {
                 isStreaming: true
             }]);
 
-            const messagesToSend = oldThreadId ? [...systemMessages, { role: "user", content: message }] : [{ role: "user", content: message }];
+            const messagesToSend = !initialized ? [...systemMessages, { role: "user", content: message }] : [{ role: "user", content: message }];
+            setInitialized(true);
 
             const stream = await app.stream(
                 { messages: messagesToSend },
