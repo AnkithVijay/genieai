@@ -5,13 +5,7 @@ import { LangChainProvider } from "./providers/langchain";
 import { WrappedEtherProvider } from "./providers/WrappedEther";
 import { CowSwapProvider } from "./providers/CowSwap";
 import { OneinchProvider } from "./providers/Oneinch";
-import { Poppins } from "next/font/google";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  display: "swap",
-});
+import Poppins from "./fonts/poppins";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.className} antialiased bg-white text-black text-center`}
+        className={`${Poppins.className} antialiased bg-white text-black text-center`}
       >
         <Web3Provider>
           <WrappedEtherProvider>
