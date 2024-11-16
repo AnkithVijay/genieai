@@ -10,7 +10,29 @@ const nextConfig = {
     ZAPPER_API_KEY: process.env.ZAPPER_API_KEY,
     INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
     SERPAPI_API_KEY: process.env.SERPAPI_API_KEY,
-    ONEINCH_API_KEY: process.env.ONEINCH_API_KEY
+    ONEINCH_API_KEY: process.env.ONEINCH_API_KEY,
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "app.stakewise.io",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "assets.coingecko.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

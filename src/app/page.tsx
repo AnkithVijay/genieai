@@ -23,7 +23,7 @@ export default function Home() {
         ))}
       </ul>
       <main className="flex flex-col justify-center items-center w-full max-w-3xl gap-12 row-start-2">
-        <Image src="/logo/logo1.svg" alt="logo" width={300} height={300} />
+        <Image src="/logo/logo.svg" alt="logo" width={300} height={300} />
         <div className="flex flex-col justify-center items-center gap-4">
           <BoxReveal boxColor={"#892BE1"} duration={0.1}>
             <h1 className="font-bold text-primary text-4xl">
@@ -32,7 +32,7 @@ export default function Home() {
           </BoxReveal>
           <BoxReveal boxColor={"#6b7280"} duration={0.1}>
             <p className="text-lg text-gray-500">
-              Discover the magic of crypto with <i>GenieFi!</i> Swap tokens,
+              Discover the magic of crypto with <i>GenieAI!</i> Swap tokens,
               check balances, bridge assets, and track transactions seamlessly
               with our AI-powered assistant. Designed for beginners and pros
               alike.
