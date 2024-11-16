@@ -5,7 +5,7 @@ import { LangChainProvider } from "./providers/langchain";
 import { WrappedEtherProvider } from "./providers/WrappedEther";
 import { CowSwapProvider } from "./providers/CowSwap";
 import { OneinchProvider } from "./providers/Oneinch";
-import Poppins from "./fonts/poppins";
+import Poppins from "./fonts/Poppins";
 
 export const metadata: Metadata = {
   title: "Create Next App",
