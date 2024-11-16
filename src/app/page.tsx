@@ -1,46 +1,48 @@
-'use client'
-import React, { useEffect } from 'react';
-import { useWeb3Auth } from './providers/web3Init';
-import { useRouter } from 'next/navigation';
+"use client";
+import React, { useEffect } from "react";
+import { useWeb3Auth } from "./providers/web3Init";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Home() {
-
-  const { login, logout, getUserInfo, loggedIn } = useWeb3Auth();
+  const { login, logout, loggedIn } = useWeb3Auth();
   const router = useRouter();
 
   useEffect(() => {
     if (loggedIn) {
-      router.push('/chat');
+      router.push("/chat");
     }
-  }, [loggedIn])
-
+  }, [loggedIn]);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col w-full max-w-2xl gap-8 row-start-2">
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+      <main className="flex flex-col justify-center items-center w-full max-w-3xl gap-12 row-start-2">
+        <Image src="/logo/logo1.svg" alt="logo" width={300} height={300} />
+        <div className="flex flex-col justify-center items-center gap-4">
+          <h1 className="font-bold text-primary text-4xl">
+            Your AI-Powered Crypto Assistant
+          </h1>
+          <p className="text-lg text-gray-500">
+            Discover the magic of crypto with <i>GenieFi!</i> Swap tokens, check
+            balances, bridge assets, and track transactions seamlessly with our
+            AI-powered assistant. Designed for beginners and pros alike.
+          </p>
+        </div>
         <div className="flex justify-end gap-4">
           {!loggedIn ? (
             <button
               onClick={login}
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              className="px-6 py-2.5 bg-primary/20 text-primary rounded-full hover:bg-primary/30 font-semibold text-lg border border-primary/50 hover:border-primary"
             >
-              Login
+              Login with Web3Auth
             </button>
           ) : (
-            <div className="flex gap-4">
-              <button
-                onClick={getUserInfo}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-              >
-                Get User Info
-              </button>
-              <button
-                onClick={logout}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-              >
-                Logout
-              </button>
-            </div>
+            <button
+              onClick={logout}
+              className="px-6 py-2.5 bg-red-200 text-red-600 rounded-full hover:bg-red-300 font-semibold text-lg border border-red-600 hover:border-red-600"
+            >
+              Logout
+            </button>
           )}
         </div>
       </main>
