@@ -16,7 +16,7 @@ export default function Home() {
   }, [loggedIn]);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 relative">
       <ul className="background">
         {new Array(8).fill(null).map((_, i) => (
           <li key={i}></li>
@@ -59,6 +59,15 @@ export default function Home() {
           )}
         </div>
       </main>
+      <footer className="absolute bottom-4 w-full text-center flex flex-row justify-center items-center gap-1 font-semibold">
+        Built with ❤️ at ETHBangkok{" "}
+        <Image
+          src={"/ETHBangkok.svg"}
+          alt="ETHBangkok"
+          width={50}
+          height={50}
+        />
+      </footer>
     </div>
   );
 }
