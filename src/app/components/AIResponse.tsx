@@ -11,7 +11,7 @@ interface AIResponseProps {
 }
 
 interface Section {
-  type: 'text' | 'markdown' | 'table' | 'list' | 'link' | 'image' | 'FUNCTION_CALL' | 'portfolio' | 'token_list' | 'capabilities' | 'examples' | 'token_balance';
+  type: 'text' | 'markdown' | 'table' | 'list' | 'link' | 'image' | 'FUNCTION_CALL' | 'portfolio' | 'token_list' | 'capabilities' | 'examples' | 'token_balance' | 'function';
   content: any;
   title?: string;
   display?: {
@@ -101,6 +101,16 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
             </div>
             <div className="text-sm text-gray-500">
               {parseFloat(section.content.balance).toFixed(6)} {section.content.symbol}
+            </div>
+          </div>
+        );
+
+      case 'function':
+        return (
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm">
+            <div className="flex items-center gap-2">
+              <span className="font-medium">{section.content.function}</span>
+              <span className="text-sm text-gray-500">({section.content.args.join(', ')})</span>
             </div>
           </div>
         );
@@ -200,7 +210,20 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
           <div className="bg-white p-4 rounded-lg">
             <ul className="list-disc list-inside space-y-2">
               {Array.isArray(section.content) && section.content.map((item: any, idx: number) => (
-                <li key={idx} className="text-gray-700">{item}</li>
+                <li key={idx} className="text-gray-700">
+                  {typeof item === 'object' ? (
+                    <div className="ml-2">
+                      {Object.entries(item).map(([key, value]) => (
+                        <div key={key} className="flex items-start gap-2">
+                          <span className="font-medium">{key}:</span>
+                          <span>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    item.toString()
+                  )}
+                </li>
               ))}
             </ul>
           </div>
