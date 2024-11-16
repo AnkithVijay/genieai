@@ -5,7 +5,20 @@ import { LangChainProvider } from "./providers/langchain";
 import { WrappedEtherProvider } from "./providers/WrappedEther";
 import { CowSwapProvider } from "./providers/CowSwap";
 import { OneinchProvider } from "./providers/Oneinch";
-import Poppins from "./fonts/Poppins";
+import localFont from "next/font/local";
+import { EnsProvider } from "./providers/EnsProvider";
+import { ContractInteractionProvider } from "./providers/ContractInteraction";
+
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 
 export const metadata: Metadata = {
   title: "GenieAI - Your Buddy for Crypto-Journey",
@@ -21,13 +34,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${Poppins.className} antialiased bg-white text-black text-center`}
+        className={`${geistSans.className} antialiased bg-white text-black text-center`}
       >
         <Web3Provider>
           <WrappedEtherProvider>
             <CowSwapProvider>
               <OneinchProvider>
-                <LangChainProvider>{children}</LangChainProvider>
+                <EnsProvider>
+                  <ContractInteractionProvider>
+                    <LangChainProvider>
+                      {children}
+                    </LangChainProvider>
+                  </ContractInteractionProvider>
+                </EnsProvider>
               </OneinchProvider>
             </CowSwapProvider>
           </WrappedEtherProvider>

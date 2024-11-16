@@ -7,6 +7,10 @@ import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tool
 import { useCowSwap } from './CowSwap';
 import { useWrappedEther } from './WrappedEther';
 import { useOneinch } from './Oneinch';
+import { ChatAnthropic } from '@langchain/anthropic';
+import { useEnsProvider } from './EnsProvider';
+import { JsonOutputParser } from '@langchain/core/output_parsers';
+import { useContractInteraction } from './ContractInteraction';
 
 
 interface LangChainContextType {
@@ -24,20 +28,24 @@ export const useLangChain = () => {
 };
 
 export function LangChainProvider({ children }: { children: React.ReactNode }) {
-    const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval, getTokenBalance, getActiveOrders } = useCowSwap();
+    const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, getTokenImage, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval, getTokenBalance, getActiveOrders } = useCowSwap();
     const { wrapEth, unwrapEth, wethBalance } = useWrappedEther();
+    const { getEnsName, getEnsAddress, sendAmount } = useEnsProvider();
+    const { getReadContractABI, getWriteContractABI, readContract, writeContract } = useContractInteraction();
     // const { getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool } = useOneinch();
 
     const zapperTools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
     const wethTools = [wrapEth, unwrapEth, wethBalance];
+    const ensTools = [getEnsName, getEnsAddress, sendAmount];
+    const contractTools = [getReadContractABI, getWriteContractABI, readContract, writeContract];
     // const oneinchTools = [getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool];
-    const cowswapTools = [getCowSwapQuote, approveToken, checkApproval, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, getTokenBalance];
+    const cowswapTools = [getCowSwapQuote, getTokenImage, approveToken, checkApproval, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, getTokenBalance];
 
-    const tools = [...cowswapTools, ...wethTools, ...zapperTools];
+    const tools = [...cowswapTools, ...ensTools, ...wethTools, ...zapperTools, ...contractTools];
     const toolNode = new ToolNode(tools);
 
     const model = new ChatOpenAI({
-        model: "gpt-4o",
+        model: "gpt-4o-mini",
         temperature: 0,
         apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
     }).bindTools(tools);

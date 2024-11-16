@@ -17,6 +17,7 @@ interface CowSwapContextType {
     getCowSupportedTokensTool: any;
     getTokenBalance: any;
     getActiveOrders: any;
+    getTokenImage: any;
 }
 
 const CowSwapContext = createContext<CowSwapContextType | null>(null);
@@ -36,6 +37,7 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
         async ({ tokenAddress, tokenAmount, tokenDecimals }) => {
             console.log("approveToken", tokenAmount);
             try {
+                console.log("provider", tokenAddress, tokenAmount, tokenDecimals);
                 if (!provider) return;
                 const relayerAddress = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110';
                 const ethersProvider = new ethers.providers.Web3Provider(provider);
@@ -58,6 +60,7 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
                 return receipt;
             } catch (error) {
                 console.log("error", error);
+                return error;
             }
         },
         {
@@ -320,6 +323,20 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
         }
     )
 
+    const getTokenImage = tool(
+        async ({ tokenAddress }) => {
+            const token = await getCowTokenByAddress(tokenAddress);
+            return token?.logoURI;
+        },
+        {
+            name: 'getTokenImage',
+            description: 'Get the image of a token',
+            schema: z.object({
+                tokenAddress: z.string().describe('The address of the token'),
+            })
+        }
+    )
+
     return (
         <CowSwapContext.Provider value={{
             approveToken,
@@ -330,7 +347,8 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
             searchCowTokenBySymbolToolAndChainId,
             getCowSupportedTokensTool,
             getTokenBalance,
-            getActiveOrders
+            getActiveOrders,
+            getTokenImage
         }}>
             {children}
         </CowSwapContext.Provider>
