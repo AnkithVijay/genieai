@@ -35,6 +35,38 @@ export default function Home() {
     } = useWeb3Auth();
     const { app } = useLangChain();
 
+    const promptOptions = [
+        "How much ETH do I have?",
+        "What is the quote for 0.02 WETH to USDT?",
+        "What is the address of vijayankith.eth?",
+        "Send 0.001 ETH to vijayankith.eth"
+    ];
+
+    const renderPromptOptions = () => {
+        if (messages.length > 0) return null;
+
+        return (
+            <div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                    How can I help you today?
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {promptOptions.map((prompt, index) => (
+                        <button
+                            key={index}
+                            onClick={() => handleSendMessage(prompt)}
+                            className="p-4 text-left border border-primary/30 rounded-lg 
+                                     hover:border-primary hover:bg-primary/5 transition-all
+                                     text-gray-700 hover:text-primary"
+                        >
+                            {prompt}
+                        </button>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
     const handleSendMessage = async (message: string) => {
         if (!message.trim() || !provider) return;
 
@@ -133,6 +165,7 @@ export default function Home() {
             <div className="flex justify-start items-start w-screen p-4 gap-8">
                 <main className="flex flex-col flex-grow h-full w-full gap-8">
                     <SidebarTrigger />
+                    {renderPromptOptions()}
                     <AIResponse
                         messages={messages}
                         handleSendMessage={handleSendMessage}
