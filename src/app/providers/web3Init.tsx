@@ -36,13 +36,13 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     const clientId = "BGZCvBJX8rGEZBWoGudKfqscNxmlaw6FNr7u5ni6T9iWaN-ZmST-jIhOSH1QA7nX0kXlaltJc_HmJIOiYe1T678";
     const chainConfig = {
         chainNamespace: CHAIN_NAMESPACES.EIP155,
-        chainId: "0xaa36a7",
-        rpcTarget: "https://eth-sepolia.blockscout.com",
-        displayName: "Ethereum Sepolia Testnet",
-        blockExplorerUrl: "https://sepolia.etherscan.io",
-        ticker: "ETH",
-        tickerName: "Ethereum",
-        logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+        chainId: "137",
+        rpcTarget: "https://polygon.blockscout.com", //"https://eth-sepolia.blockscout.com",
+        displayName: "Polygon", //"Ethereum Sepolia Testnet",
+        blockExplorerUrl: "https://polygonscan.com", //"https://sepolia.etherscan.io",
+        ticker: "MATIC",
+        tickerName: "Polygon",
+        logo: "https://cryptologos.cc/logos/polygon-matic-logo.png",
     };
 
     useEffect(() => {

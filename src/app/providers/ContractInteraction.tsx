@@ -30,7 +30,9 @@ export function ContractInteractionProvider({ children }: { children: React.Reac
     const getReadContractABI = tool(
         async ({ contractAddress }) => {
             try {
-                const response = await fetch(`https://eth-sepolia.blockscout.com/api/v2/smart-contracts/${contractAddress}/methods-read?is_custom_abi=false&from=0xF61f5c4a3664501F499A9289AaEe76a709CE536e`);
+                // polygon.blockscout.com
+                // eth-sepolia.blockscout.com
+                const response = await fetch(`https://polygon.blockscout.com/api/v2/smart-contracts/${contractAddress}/methods-read?is_custom_abi=false&from=0xF61f5c4a3664501F499A9289AaEe76a709CE536e`);
                 const data = await response.json();
                 return {
                     abi: data,
@@ -50,7 +52,9 @@ export function ContractInteractionProvider({ children }: { children: React.Reac
     const getWriteContractABI = tool(
         async ({ contractAddress, chainId }) => {
             try {
-                const response = await fetch(`https://eth-sepolia.blockscout.com/api/v2/smart-contracts/${contractAddress}/methods-write?is_custom_abi=false&from=0xF61f5c4a3664501F499A9289AaEe76a709CE536e`);
+                // polygon.blockscout.com
+                // eth-sepolia.blockscout.com
+                const response = await fetch(`https://polygon.blockscout.com/api/v2/smart-contracts/${contractAddress}/methods-write?is_custom_abi=false&from=0xF61f5c4a3664501F499A9289AaEe76a709CE536e`);
                 const data = await response.json();
                 return {
                     abi: data,
