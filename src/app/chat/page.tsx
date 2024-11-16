@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { getSystemMessages } from "../utils/prompt";
 import { v4 as uuidv4 } from "uuid";
 import { AIResponse } from "../components/AIResponse";
@@ -25,10 +25,6 @@ export default function Home() {
 
     const {
         provider,
-        login,
-        logout,
-        getUserInfo,
-        loggedIn,
         getBalance,
         getAccounts,
         getChainId,
@@ -38,6 +34,7 @@ export default function Home() {
     const promptOptions = [
         "How much ETH do I have?",
         "What is the quote for 0.02 WETH to USDT?",
+        "I want to swap 0.01 ETH to USDT",
         "What is the address of vijayankith.eth?",
         "Send 0.001 ETH to vijayankith.eth"
     ];
@@ -46,18 +43,17 @@ export default function Home() {
         if (messages.length > 0) return null;
 
         return (
-            <div className="flex flex-col gap-4 w-full max-w-2xl mx-auto">
+            <div className="flex flex-col gap-4 w-full justify-start items-start">
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                    How can I help you today?
+                    Hello, How can I help you today?
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-row flex-wrap justify-start items-center gap-4">
                     {promptOptions.map((prompt, index) => (
                         <button
                             key={index}
                             onClick={() => handleSendMessage(prompt)}
-                            className="p-4 text-left border border-primary/30 rounded-lg 
-                                     hover:border-primary hover:bg-primary/5 transition-all
-                                     text-gray-700 hover:text-primary"
+                            className="px-4 py-3 text-sm text-left rounded-full 
+                                      line-clamp-1 bg-primary/20 text-primary border-primary hover:bg-primary/30"
                         >
                             {prompt}
                         </button>

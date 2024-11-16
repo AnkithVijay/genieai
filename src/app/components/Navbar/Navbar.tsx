@@ -30,32 +30,32 @@ export function Navbar() {
             </SidebarMenu>
             <div className="flex flex-col gap-3 justify-start items-start flex-grow">
               <div className="font-bold text-slate-500 px-4">Today</div>
-              <div className="flex flex-col gap-2 justify-start px-2 items-start text-left w-full">
-                <button className="truncate w-56 bg-slate-200 p-2 rounded-lg">
+              <div className="flex flex-col gap-2 justify-start px-4 items-start text-left w-full">
+                <button className="truncate w-full bg-slate-200 p-2 rounded-lg">
                   What can i do with my crypto? What can i do with my crypto?
                 </button>
-                <button className="truncate w-56  p-2 rounded-lg">
-                  What can i do with my crypto? What can i do with my crypto?
-                </button>
-                <button className="truncate w-56 p-2 rounded-lg">
-                  What can i do with my crypto? What can i do with my crypto?
-                </button>
-                <button className="truncate w-56  p-2 rounded-lg">
-                  What can i do with my crypto? What can i do with my crypto?
-                </button>
-                <button className="truncate w-56  p-2 rounded-lg">
-                  What can i do with my crypto? What can i do with my crypto?
-                </button>
-                <button className="truncate w-56  p-2 rounded-lg">
-                  What can i do with my crypto? What can i do with my crypto?
-                </button>
-                <button className="truncate w-56  p-2 rounded-lg">
+                <button className="truncate w-full p-2 rounded-lg">
                   What can i do with my crypto? What can i do with my crypto?
                 </button>
                 <button className="truncate w-56 p-2 rounded-lg">
                   What can i do with my crypto? What can i do with my crypto?
                 </button>
-                <button className="truncate w-56  p-2 rounded-lg">
+                <button className="truncate w-full p-2 rounded-lg">
+                  What can i do with my crypto? What can i do with my crypto?
+                </button>
+                <button className="truncate w-full p-2 rounded-lg">
+                  What can i do with my crypto? What can i do with my crypto?
+                </button>
+                <button className="truncate w-full p-2 rounded-lg">
+                  What can i do with my crypto? What can i do with my crypto?
+                </button>
+                <button className="truncate w-full p-2 rounded-lg">
+                  What can i do with my crypto? What can i do with my crypto?
+                </button>
+                <button className="truncate w-56 p-2 rounded-lg">
+                  What can i do with my crypto? What can i do with my crypto?
+                </button>
+                <button className="truncate w-full p-2 rounded-lg">
                   What can i do with my crypto? What can i do with my crypto?
                 </button>
                 <button className="truncate w-56 p-2 rounded-lg">

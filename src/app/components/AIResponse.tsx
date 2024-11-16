@@ -1,5 +1,6 @@
-import { Loader2 } from 'lucide-react';
+import { Crown, Loader2 } from 'lucide-react';
 import React from 'react';
+import Image from 'next/image';
 
 interface AIResponseProps {
   messages: Array<{
@@ -92,7 +93,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
     switch (section.type) {
       case 'text':
         return (
-          <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
+          <div className="bg-white rounded-lg flex flex-col justify-start items-start text-left">
             <p
               className="text-gray-700 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: formatText(section.content) }}
@@ -320,21 +321,27 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
           className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
             }`}
         >
-          <div className={`max-w-[80%] p-4 rounded-lg`}>
+          <div className={`max-w-[80%] rounded-lg`}>
             {message.role === "user" ? (
-              <div
-                className={
-                  "whitespace-pre-wrap bg-secondary/20 text-secondary px-4 py-2 rounded-lg"
-                }
-              >
-                {message.content}{" "}
+              <div className='flex flex-row justify-start items-start gap-2'>
+
+                <div
+                  className={
+                    "whitespace-pre-wrap bg-secondary/20 text-secondary px-4 py-2 rounded-lg"
+                  }
+                >
+
+                  {message.content}{" "}
+                </div>
+                <Crown className="text-primary mt-1" />
               </div>
             ) : (
               <div className="flex flex-col justify-start items-start gap-4">
                 {(() => {
                   const parsedContent = safeJsonParse(message.content);
                   return parsedContent.sections.map((section: any, idx: number) => (
-                    <div key={idx}>
+                    <div className='flex flex-row justify-start items-start gap-2' key={idx}>
+                      <Image className='rounded-full' src={"/logo/icon.svg"} alt={"GenieAI Icon"} width={30} height={30} />
                       {renderSection(section, message.isStreaming || false)}
                     </div>
                   ));
