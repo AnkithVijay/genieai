@@ -36,6 +36,7 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
         async ({ tokenAddress, tokenAmount, tokenDecimals }) => {
             console.log("approveToken", tokenAmount);
             try {
+                console.log("provider", tokenAddress, tokenAmount, tokenDecimals);
                 if (!provider) return;
                 const relayerAddress = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110';
                 const ethersProvider = new ethers.providers.Web3Provider(provider);
@@ -58,6 +59,7 @@ export function CowSwapProvider({ children }: { children: React.ReactNode }) {
                 return receipt;
             } catch (error) {
                 console.log("error", error);
+                return error;
             }
         },
         {

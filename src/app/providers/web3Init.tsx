@@ -37,7 +37,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     const chainConfig = {
         chainNamespace: CHAIN_NAMESPACES.EIP155,
         chainId: "0xaa36a7",
-        rpcTarget: "https://rpc.ankr.com/eth_sepolia",
+        rpcTarget: "https://eth-sepolia.blockscout.com",
         displayName: "Ethereum Sepolia Testnet",
         blockExplorerUrl: "https://sepolia.etherscan.io",
         ticker: "ETH",

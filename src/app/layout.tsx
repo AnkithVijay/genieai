@@ -6,6 +6,7 @@ import { LangChainProvider } from "./providers/langchain";
 import { WrappedEtherProvider } from "./providers/WrappedEther";
 import { CowSwapProvider } from "./providers/CowSwap";
 import { OneinchProvider } from "./providers/Oneinch";
+import { EnsProvider } from "./providers/EnsProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,9 +36,11 @@ export default function RootLayout({
           <WrappedEtherProvider>
             <CowSwapProvider>
               <OneinchProvider>
-                <LangChainProvider>
-                  {children}
-                </LangChainProvider>
+                <EnsProvider>
+                  <LangChainProvider>
+                    {children}
+                  </LangChainProvider>
+                </EnsProvider>
               </OneinchProvider>
             </CowSwapProvider>
           </WrappedEtherProvider>

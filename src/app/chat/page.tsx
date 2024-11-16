@@ -11,7 +11,7 @@ export default function Home() {
     const [messages, setMessages] = React.useState<{ role: 'user' | 'ai', content: string, type: string, isStreaming?: boolean }[]>([]);
     const [inputMessage, setInputMessage] = React.useState('');
     const [threadId, setThreadId] = useState(uuidv4());
-    const [initialized, setInitialized] = useState(false);
+    const [initialized, setInitialized] = useState(true);
 
     const { provider, login, logout, getUserInfo, loggedIn, getBalance, getAccounts, getChainId } = useWeb3Auth();
     const { app } = useLangChain();
@@ -42,8 +42,8 @@ export default function Home() {
                 isStreaming: true
             }]);
 
-            const messagesToSend = !initialized ? [...systemMessages, { role: "user", content: message }] : [{ role: "user", content: message }];
-            setInitialized(true);
+            const messagesToSend = initialized ? [...systemMessages, { role: "user", content: message }] : [{ role: "user", content: message }];
+            setInitialized(false);
 
             const stream = await app.stream(
                 { messages: messagesToSend },

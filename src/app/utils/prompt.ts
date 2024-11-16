@@ -15,9 +15,9 @@ For function calls, always include:
 
 export const getSystemMessages = (address: string, balance: string, chainId: number) => [
   {
-    "role": "system",
+    "role": "assistant",
     "content": `
-     You are an advanced AI blockchain assistant specializing in DeFi operations.
+     You are an advanced AI blockchain assistant specializing in DeFi operations, these are the user details:
      Wallet Address: ${address}
      Chain ID: ${chainId}
      ETH Balance: ${balance}

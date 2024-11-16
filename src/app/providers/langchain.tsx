@@ -7,6 +7,8 @@ import { getNftDataTool, getDefiDataTool, getTokenDataTool } from "../agent/tool
 import { useCowSwap } from './CowSwap';
 import { useWrappedEther } from './WrappedEther';
 import { useOneinch } from './Oneinch';
+import { ChatAnthropic } from '@langchain/anthropic';
+import { useEnsProvider } from './EnsProvider';
 
 
 interface LangChainContextType {
@@ -26,20 +28,22 @@ export const useLangChain = () => {
 export function LangChainProvider({ children }: { children: React.ReactNode }) {
     const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval, getTokenBalance, getActiveOrders } = useCowSwap();
     const { wrapEth, unwrapEth, wethBalance } = useWrappedEther();
+    const { getEnsName, getEnsAddress } = useEnsProvider();
     // const { getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool } = useOneinch();
 
     const zapperTools = [getTokenDataTool, getDefiDataTool, getNftDataTool];
     const wethTools = [wrapEth, unwrapEth, wethBalance];
+    const ensTools = [getEnsName, getEnsAddress];
     // const oneinchTools = [getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool];
     const cowswapTools = [getCowSwapQuote, approveToken, checkApproval, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, getTokenBalance];
 
-    const tools = [...cowswapTools, ...wethTools, ...zapperTools];
+    const tools = [...cowswapTools, ...ensTools, ...wethTools, ...zapperTools];
     const toolNode = new ToolNode(tools);
 
-    const model = new ChatOpenAI({
-        model: "gpt-4o",
+    const model = new ChatAnthropic({
+        model: "claude-3-5-sonnet-20240620",
         temperature: 0,
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+        apiKey: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY,
     }).bindTools(tools);
 
     function shouldContinue(state: typeof MessagesAnnotation.State) {
