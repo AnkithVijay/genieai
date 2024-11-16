@@ -9,6 +9,7 @@ import { useWrappedEther } from './WrappedEther';
 import { useOneinch } from './Oneinch';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { useEnsProvider } from './EnsProvider';
+import { JsonOutputParser } from '@langchain/core/output_parsers';
 
 
 interface LangChainContextType {
@@ -40,10 +41,10 @@ export function LangChainProvider({ children }: { children: React.ReactNode }) {
     const tools = [...cowswapTools, ...ensTools, ...wethTools, ...zapperTools];
     const toolNode = new ToolNode(tools);
 
-    const model = new ChatAnthropic({
-        model: "claude-3-5-sonnet-20240620",
+    const model = new ChatOpenAI({
+        model: "gpt-4o-mini",
         temperature: 0,
-        apiKey: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY,
+        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
     }).bindTools(tools);
 
     function shouldContinue(state: typeof MessagesAnnotation.State) {

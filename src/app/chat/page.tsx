@@ -55,6 +55,7 @@ export default function Home() {
 
             let fullResponse = '';
             for await (const chunk of stream) {
+                console.log(chunk);
                 const lastMessage = chunk.messages[chunk.messages.length - 1];
                 if (lastMessage.content && lastMessage.content !== "") {
                     fullResponse = lastMessage.content;

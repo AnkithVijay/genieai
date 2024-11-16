@@ -1,13 +1,10 @@
 'use client'
 import React, { createContext, useContext } from 'react';
-import { ethers } from 'ethers';
-import { OrderBookApi, OrderQuoteRequest, OrderQuoteSideKindSell, UnsignedOrder, OrderSigningUtils, SigningScheme } from '@cowprotocol/cow-sdk';
 import { useWeb3Auth } from './web3Init';
 import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
-import { getWrappedEthAddress } from '../utils/utils';
-import { WETH_ABI } from '../abi/weth';
 import RPC from '../utils/ethersRPC';
+
 interface EnsProviderContextType {
     getEnsName: any;
     getEnsAddress: any;
@@ -84,7 +81,7 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
                                 id
                                 name
                                 labelName
-                                labelhash
+                                expiryDate
                                 resolvedAddress {
                                     id
                                 }
@@ -134,9 +131,7 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
             reciever: z.string().describe("The address to send the ETH to, example: '0x1234567890123456789012345678901234567890'"),
             amount: z.string().describe("The amount of erc20 or eth to send, example: '1'"),
         }),
-    }
-    )
-
+    });
 
     return (
         <EnsProviderContext.Provider value={{
