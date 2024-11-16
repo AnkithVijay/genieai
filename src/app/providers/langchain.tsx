@@ -27,7 +27,7 @@ export const useLangChain = () => {
 };
 
 export function LangChainProvider({ children }: { children: React.ReactNode }) {
-    const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval, getTokenBalance, getActiveOrders } = useCowSwap();
+    const { getCowSwapQuote, signCowSwapOrder, getOrderStatus, getTokenImage, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, approveToken, checkApproval, getTokenBalance, getActiveOrders } = useCowSwap();
     const { wrapEth, unwrapEth, wethBalance } = useWrappedEther();
     const { getEnsName, getEnsAddress, sendAmount } = useEnsProvider();
     // const { getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool } = useOneinch();
@@ -36,7 +36,7 @@ export function LangChainProvider({ children }: { children: React.ReactNode }) {
     const wethTools = [wrapEth, unwrapEth, wethBalance];
     const ensTools = [getEnsName, getEnsAddress, sendAmount];
     // const oneinchTools = [getCrossChainQuoteTool, placeCrossChainOrderTool, getSupportedTokensByChainIdTool, getCrossChainSupportedTokensTool, getTokenByNameOrSymbolTool, getSameChainQuoteTool];
-    const cowswapTools = [getCowSwapQuote, approveToken, checkApproval, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, getTokenBalance];
+    const cowswapTools = [getCowSwapQuote, getTokenImage, approveToken, checkApproval, signCowSwapOrder, getOrderStatus, searchCowTokenBySymbolToolAndChainId, getCowSupportedTokensTool, getTokenBalance];
 
     const tools = [...cowswapTools, ...ensTools, ...wethTools, ...zapperTools];
     const toolNode = new ToolNode(tools);

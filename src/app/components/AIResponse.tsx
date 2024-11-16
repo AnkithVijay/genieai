@@ -11,7 +11,7 @@ interface AIResponseProps {
 }
 
 interface Section {
-  type: 'text' | 'markdown' | 'table' | 'list' | 'link' | 'image' | 'FUNCTION_CALL' | 'portfolio' | 'token_list' | 'capabilities' | 'examples';
+  type: 'text' | 'markdown' | 'table' | 'list' | 'link' | 'image' | 'FUNCTION_CALL' | 'portfolio' | 'token_list' | 'capabilities' | 'examples' | 'token_balance';
   content: any;
   title?: string;
   display?: {
@@ -89,6 +89,19 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
               className="text-gray-700 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: formatText(section.content) }}
             />
+          </div>
+        );
+
+      case 'token_balance':
+        return (
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm">
+            <div className="flex items-center gap-2">
+              <img src={section.content.image} alt={section.content.symbol} className="w-8 h-8 rounded-full" />
+              <span className="font-medium">{section.content.symbol}</span>
+            </div>
+            <div className="text-sm text-gray-500">
+              {parseFloat(section.content.balance).toFixed(6)} {section.content.symbol}
+            </div>
           </div>
         );
 

@@ -12,14 +12,22 @@ export const getSystemMessages = (address: string, balance: string, chainId: num
      {
        "sections": [
          {
+           "type": "token_balance", // This is a custom type for token balances use it when user asks for token balances
+           "content": {
+            "symbol": "ETH",
+            "balance": "1000000000000000000",
+            "image": "https://assets.coingecko.com/coins/images/279/large/ethereum.png?1796501422"
+           }
+         },
+         {
            "type": "text",
            "content": "The address for vijayankith.eth is 0x3ee3ffd237513a3477282eba5f7c0adf271e4afa"
          },
          {
            "type": "link",
            "content": "https://eth-sepolia.blockscout.com/tx/0x3ee3ffd237513a3477282eba5f7c0adf271e4afa",
-           "title": "View on Etherscan"
-         }
+           "title": "View on Blockscout"
+         },
        ]
      }
 
@@ -32,6 +40,7 @@ export const getSystemMessages = (address: string, balance: string, chainId: num
      - FUNCTION_CALL: For transactions
      - portfolio: Token balances
      - token_list: Available tokens
+     - token_balance: Token balances
      - capabilities: Feature list
      - examples: Suggested queries
 
