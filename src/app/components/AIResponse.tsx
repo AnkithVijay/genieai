@@ -1,3 +1,4 @@
+import { Loader2 } from 'lucide-react';
 import React from 'react';
 
 interface AIResponseProps {
@@ -11,7 +12,7 @@ interface AIResponseProps {
 }
 
 interface Section {
-  type: 'text' | 'markdown' | 'table' | 'list' | 'link' | 'image' | 'FUNCTION_CALL' | 'portfolio' | 'token_list' | 'capabilities' | 'examples' | 'token_balance' | 'function';
+  type: 'text' | 'analysis' | 'markdown' | 'table' | 'list' | 'link' | 'image' | 'FUNCTION_CALL' | 'portfolio' | 'token_list' | 'capabilities' | 'examples' | 'token_balance' | 'function';
   content: any;
   title?: string;
   display?: {
@@ -91,7 +92,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
     switch (section.type) {
       case 'text':
         return (
-          <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
             <p
               className="text-gray-700 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: formatText(section.content) }}
@@ -101,7 +102,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'token_balance':
         return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm">
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
             <div className="flex items-center gap-2">
               <img src={section.content.image} alt={section.content.symbol} className="w-8 h-8 rounded-full" />
               <span className="font-medium">{section.content.symbol}</span>
@@ -114,7 +115,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'function':
         return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm">
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
             <div className="flex items-center gap-2">
               <span className="font-medium">{section.content.function}</span>
               <span className="text-sm text-gray-500">({section.content.args.join(', ')})</span>
@@ -124,7 +125,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'FUNCTION_CALL':
         return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm">
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
             <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-100">
               <div className="flex flex-col gap-1">
                 <span className="font-medium text-blue-900">
@@ -153,7 +154,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'link':
         return (
-          <div className="bg-white p-4 rounded-lg shadow-sm">
+          <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
             <a
               href={section.content}
               target="_blank"
@@ -170,7 +171,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'token_list':
         return (
-          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm">
+          <div className="flex flex-col gap-2 bg-white p-4 rounded-lg shadow-sm flex flex-col justify-start items-start text-left">
             {section.title && (
               <h3 className="text-lg font-bold text-gray-900 mb-2">{section.title}</h3>
             )}
@@ -215,7 +216,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
       case "list":
         return (
           <div className="bg-white p-4 rounded-lg">
-            <ul className="list-disc list-inside space-y-2">
+            <ul className="list-disc list-inside space-y-2 text-left">
               {Array.isArray(section.content) && section.content.map((item: any, idx: number) => (
                 <li key={idx} className="text-gray-700">
                   {typeof item === 'object' ? (
@@ -252,7 +253,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case 'capabilities':
         return (
-          <div className="bg-white p-6 rounded-lg shadow">
+          <div className="bg-white p-6 rounded-lg shadow text-left">
             <h2 className="text-2xl font-bold mb-4">Capabilities Overview</h2>
             <ul className="space-y-4">
               {Array.isArray(section.content) &&
@@ -268,7 +269,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
 
       case "examples":
         return (
-          <div className="bg-white p-6 rounded-lg shadow mt-4">
+          <div className="bg-white p-6 rounded-lg shadow text-left mt-4">
             <h2 className="text-2xl font-bold mb-4">Example Queries</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {section.examples?.map((example: string, idx: number) => (
@@ -283,6 +284,9 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
             </div>
           </div>
         );
+
+      case "analysis":
+        return <Loader2 className="w-8 h-8 animate-spin" />;
 
       default:
         return (
@@ -313,7 +317,7 @@ export const AIResponse: React.FC<AIResponseProps> = ({ messages, handleSendMess
                 {message.content}{" "}
               </div>
             ) : (
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col justify-start items-start gap-4">
                 {(() => {
                   const parsedContent = safeJsonParse(message.content);
                   return parsedContent.sections.map((section: any, idx: number) => (

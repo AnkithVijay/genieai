@@ -1,3 +1,4 @@
+"use client";
 import { cowTokens } from "@/app/data/cow_tokens";
 import {
   Sidebar,
@@ -14,6 +15,7 @@ import { Copy, QrCode } from "lucide-react";
 import Image from "next/image";
 
 export function Profile() {
+  const amounts = [104, 127, 230, 140, 130, 100, 653, 364, 389, 620];
   return (
     <Sidebar side="right" variant="floating">
       <SidebarContent className="p-4 flex flex-col gap-8">
@@ -57,7 +59,7 @@ export function Profile() {
                         )}
                         <span className="font-medium">{token.symbol}</span>
                       </div>
-                      <div>{Math.round(Math.random() * 100)}</div>
+                      <div>{amounts[idx]}</div>
                     </div>
                   ))}
                 </div>
