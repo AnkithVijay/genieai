@@ -46,14 +46,13 @@ const getBalance = async (provider: IProvider): Promise<string> => {
     }
 }
 
-const sendTransaction = async (provider: IProvider): Promise<any> => {
+const sendTransaction = async (provider: IProvider, to: string, amount: string): Promise<any> => {
     try {
         const ethersProvider = new ethers.providers.Web3Provider(provider);
         const signer = ethersProvider.getSigner();
 
-        const destination = "0x40e1c367Eca34250cAF1bc8330E9EddfD403fC56";
+        const destination = to;
 
-        const amount = ethers.utils.parseEther("0.001");
         const fees = await ethersProvider.getFeeData()
 
         if (!fees.maxFeePerGas || !fees.maxPriorityFeePerGas) {

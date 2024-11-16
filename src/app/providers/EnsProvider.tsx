@@ -7,10 +7,11 @@ import { z } from 'zod';
 import { tool } from '@langchain/core/tools';
 import { getWrappedEthAddress } from '../utils/utils';
 import { WETH_ABI } from '../abi/weth';
-
+import RPC from '../utils/ethersRPC';
 interface EnsProviderContextType {
     getEnsName: any;
     getEnsAddress: any;
+    sendAmount: any;
 }
 
 const EnsProviderContext = createContext<EnsProviderContextType | null>(null);
@@ -29,12 +30,31 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
     const getEnsName = tool(async ({ address }) => {
         try {
             if (!provider || !address) return;
-            const _provider = new ethers.providers.JsonRpcProvider('https://eth.blockscout.com/api/eth-rpc', {
-                name: "mainnet",
-                chainId: 1,
+
+            const response = await fetch('https://gateway.thegraph.com/api/b1476e653e1c7bf04dd27b6181df59e0/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: `{
+                        accounts(where: { id: "${address.toLowerCase()}" }) {
+                            domains(first: 1) {
+                                name
+                            }
+                        }
+                    }`
+                })
             });
-            const ensName = await _provider.lookupAddress(address);
-            return ensName;
+
+            const data = await response.json();
+            const domains = data.data?.accounts[0]?.domains;
+
+            if (!domains || domains.length === 0) {
+                return null;
+            }
+
+            return domains[0].name;
         } catch (error) {
             console.error("Error getting ENS name:", error);
             return { error: "Error getting ENS name" };
@@ -51,18 +71,38 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
     const getEnsAddress = tool(
         async ({ ensDomain }) => {
             try {
-                console.log("ensDomain", ensDomain);
                 if (!ensDomain) return;
 
-                const _provider = new ethers.providers.JsonRpcProvider('https://eth.blockscout.com/api/eth-rpc', {
-                    name: "mainnet",
-                    chainId: 1,
+                const response = await fetch('https://gateway.thegraph.com/api/b1476e653e1c7bf04dd27b6181df59e0/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: `{
+                            domains(where: { name: "${ensDomain}" }) {
+                                id
+                                name
+                                labelName
+                                labelhash
+                                resolvedAddress {
+                                    id
+                                }
+                            }
+                        }`
+                    })
                 });
-                const ensAvatar = await _provider.getAvatar(ensDomain);
-                const ensAddress = await _provider.resolveName(ensDomain);
+
+                const data = await response.json();
+                const domain = data.data?.domains[0];
+
+                if (!domain) {
+                    return { error: "ENS domain not found" };
+                }
+
                 return {
-                    address: ensAddress,
-                    avatar: ensAvatar
+                    address: domain.resolvedAddress?.id,
+                    avatar: null
                 };
             } catch (error) {
                 console.log("Error getting ENS address:", error);
@@ -76,11 +116,33 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
         }),
     });
 
+    const sendAmount = tool(
+        async ({ reciever, amount }) => {
+            try {
+                if (!provider || !reciever || !amount) return;
+
+                const tx = await RPC.sendTransaction(provider, reciever, amount);
+                return tx;
+            } catch (error) {
+                console.log("Error sending amount:", error);
+                return { error: "Error sending amount" };
+            }
+        }, {
+        name: "sendAmount",
+        description: "Send an amount of ETH to an ens address",
+        schema: z.object({
+            reciever: z.string().describe("The address to send the ETH to, example: '0x1234567890123456789012345678901234567890'"),
+            amount: z.string().describe("The amount of erc20 or eth to send, example: '1'"),
+        }),
+    }
+    )
+
 
     return (
         <EnsProviderContext.Provider value={{
             getEnsName,
             getEnsAddress,
+            sendAmount,
         }}>
             {children}
         </EnsProviderContext.Provider>
