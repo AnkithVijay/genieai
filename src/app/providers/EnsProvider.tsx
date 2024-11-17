@@ -71,6 +71,16 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
             try {
                 if (!ensDomain) return;
 
+                // Check localStorage first
+                const cachedData = localStorage.getItem(`ens-${ensDomain}`);
+                if (cachedData) {
+                    const parsedData = JSON.parse(cachedData);
+                    // Only return cached data if it has both address and avatar
+                    if (parsedData.address && parsedData.avatar) {
+                        return parsedData;
+                    }
+                }
+
                 const response = await fetch('https://gateway.thegraph.com/api/b1476e653e1c7bf04dd27b6181df59e0/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH', {
                     method: 'POST',
                     headers: {
@@ -93,17 +103,23 @@ export function EnsProvider({ children }: { children: React.ReactNode }) {
 
                 const data = await response.json();
                 const domain = data.data?.domains[0];
-                const _provider = new ethers.providers.JsonRpcProvider("https://eth.blockscout.com/api/eth-rpc");
-                const image = await _provider.getAvatar(domain.resolvedAddress?.id);
 
                 if (!domain) {
                     return { error: "ENS domain not found" };
                 }
 
-                return {
+                const _provider = new ethers.providers.JsonRpcProvider("https://eth.blockscout.com/api/eth-rpc");
+                const image = await _provider.getAvatar(domain.resolvedAddress?.id);
+
+                const result = {
                     address: domain.resolvedAddress?.id,
                     avatar: image
                 };
+
+                // Cache with new key format
+                localStorage.setItem(`ens-${ensDomain}`, JSON.stringify(result));
+
+                return result;
             } catch (error) {
                 console.log("Error getting ENS address:", error);
                 return { error: "Error getting ENS address" };
